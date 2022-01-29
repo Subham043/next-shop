@@ -7,7 +7,7 @@ export default function index({ modalId, refValue, children }) {
                 <div className="modal-content" id="loginmodal">
                     <div className="modal-headers">
                         <button type="button" ref={refValue} className="close" data-dismiss="modal" aria-label="Close">
-                            <i class="fas fa-times"></i>
+                            <i className="fas fa-times"></i>
                         </button>
                     </div>
 

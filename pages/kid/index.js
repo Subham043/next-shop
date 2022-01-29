@@ -63,7 +63,9 @@ export default function Kid() {
             setShowLoader(false)
             // console.log(data.data.schools)
             setSchool(schoolData?.data?.schools)
-            setSchoolId(schoolData?.data?.schools[0]?.id)
+            if(schoolData?.data?.schools?.length > 0) {
+                setSchoolId(schoolData?.data?.schools[0]?.id)
+            }
         }
 
         return () => { };
@@ -162,7 +164,9 @@ export default function Kid() {
                 toastId: new Date()
               });
               setName('')
-              setSchoolId(schoolData?.data?.schools[0]?.id)
+              if(schoolData?.data?.schools.length > 0){
+                  setSchoolId(schoolData?.data?.schools[0]?.id)
+              }
               setGender('Male')
               modalCloseBtn.current.click();
         })
@@ -236,7 +240,7 @@ export default function Kid() {
                             <h2 className="ft-bold mb-1">Kids</h2>
                             <div className="eltio_k2">
                                 <a href="#" data-toggle="modal" data-target="#login1" className="btn btn-block custom-height bg-dark mb-2">
-                                    <i className="lni lni-shopping-basket mr-2"></i>Add Kid
+                                    <i className="fas fa-user mr-2"></i>Add Kid
                                 </a>
                             </div>
                         </div>
@@ -250,7 +254,7 @@ export default function Kid() {
                                 <th scope="col">School</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        {student?.length > 0 ? <tbody>
                             {student.map((item, index)=>{
                                 return (
                                 <tr key={item.id}>
@@ -261,6 +265,13 @@ export default function Kid() {
                                 )
                             })}
                         </tbody>
+                        :
+                        <tbody>
+                          <tr>
+                            <th scope="row" colSpan="8" className="text-center">No kid is available. Please add a kid</th>
+                          </tr>
+                        </tbody>
+                      }
                     </table>
                 </div>
             </section>
