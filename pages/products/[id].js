@@ -1,11 +1,9 @@
 import Head from 'next/head'
-import Slider from '../../components/Slider'
 import Layout from '../../components/Layout'
 import { useState, useEffect } from 'react'
 import Loader from '../../components/Loader'
 import Breadcrumb from '../../components/Breadcrumb'
 import { toast, ToastContainer } from 'react-toastify';
-import axios from '../../axios'
 import { useRouter } from 'next/router'
 import constant from '../../constant'
 import useSWR from 'swr'
@@ -18,13 +16,14 @@ export default function Product() {
     const [showLoader, setShowLoader] = useState(true)
     const [product, setProduct] = useState({})
 
-    const { data, error } = useSWR(`${constant.api_route}/product/${id}`, fetcher)
-
     const fetcher = (...args) => fetch(...args,{
         headers: {
             'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
         },
     }).then((res) => res.json())
+
+    const { data, error } = useSWR(`${constant.api_route}/product/${id}`, fetcher)
+
     
     
 
@@ -48,7 +47,7 @@ export default function Product() {
             setShowLoader(true)
         }else{
             setShowLoader(false)
-            setProduct(data.data)
+            setProduct(data?.data)
         }
     
       return () => {};
@@ -75,42 +74,42 @@ export default function Product() {
             {showLoader ? <Loader /> : null}
             <Breadcrumb link="Products" />
 
-            <section class="middle" id="prduct">
-                <div class="container">
-                    <div class="row">
+            <section className="middle" id="prduct">
+                <div className="container">
+                    <div className="row">
 
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                            <div class="sp-loading"><img src={`${constant.api_image_route}/${product?.product?.image}`} style={{ width: '100%' }} alt="" /></div>
+                        <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                            <div className="sp-loading"><img src={`${constant.api_image_route}/${product?.product?.image}`} style={{ width: '100%' }} alt="" /></div>
                         </div>
 
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                            <div class="prd_details">
+                        <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                            <div className="prd_details">
 
-                                <div class="prt_01 mb-1"><span class="text-purple bg-light-purple rounded py-1">Female's Suit</span></div>
-                                <div class="prt_02 mb-3">
-                                    <h2 class="ft-bold mb-1">{product?.product?.name}</h2>
-                                    <div class="text-left">
-                                        <div class="star-rating align-items-center d-flex justify-content-left mb-1 p-0">
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star"></i>
+                                <div className="prt_01 mb-1"><span className="text-purple bg-light-purple rounded py-1">Female's Suit</span></div>
+                                <div className="prt_02 mb-3">
+                                    <h2 className="ft-bold mb-1">{product?.product?.name}</h2>
+                                    <div className="text-left">
+                                        <div className="star-rating align-items-center d-flex justify-content-left mb-1 p-0">
+                                            <i className="fas fa-star filled"></i>
+                                            <i className="fas fa-star filled"></i>
+                                            <i className="fas fa-star filled"></i>
+                                            <i className="fas fa-star filled"></i>
+                                            <i className="fas fa-star"></i>
                                         </div>
-                                        <div class="elis_rty"><span class="ft-bold theme-cl fs-lg mr-2">$110</span></div>
+                                        <div className="elis_rty"><span className="ft-bold theme-cl fs-lg mr-2">$110</span></div>
                                     </div>
                                 </div>
 
-                                <div class="prt_03 mb-4">
+                                <div className="prt_03 mb-4">
                                     <p>{product?.product?.description}</p>
                                 </div>
 
 
-                                <div class="prt_04 mb-4">
-                                    <div class="text-left pb-0 pt-2">
-                                        <div class="col-12 col-lg-5" style={{ paddingLeft: 0 }}>
+                                <div className="prt_04 mb-4">
+                                    <div className="text-left pb-0 pt-2">
+                                        <div className="col-12 col-lg-5" style={{ paddingLeft: 0 }}>
 
-                                            <select class="mb-2 custom-select" id="size_select">
+                                            <select className="mb-2 custom-select" id="size_select">
                                                 <option value="null">Select size</option>
                                                 {product?.sizes?.map((item) =>{
                                                     return <option value={item.id} key={item.id}>{item.name}</option>
@@ -121,11 +120,11 @@ export default function Product() {
                                     </div>
                                 </div>
 
-                                <div class="prt_05 mb-4">
-                                    <div class="form-row mb-7">
-                                        <div class="col-12 col-lg">
-                                            <button type="submit" class="btn btn-block custom-height bg-dark mb-2">
-                                                <i class="lni lni-shopping-basket mr-2"></i>Add to Cart
+                                <div className="prt_05 mb-4">
+                                    <div className="form-row mb-7">
+                                        <div className="col-12 col-lg">
+                                            <button type="submit" className="btn btn-block custom-height bg-dark mb-2">
+                                                <i className="lni lni-shopping-basket mr-2"></i>Add to Cart
                                             </button>
                                         </div>
                                     </div>
@@ -141,34 +140,34 @@ export default function Product() {
                 </div>
             </section>
 
-            <section class="middle">
-                <div class="container">
-                    <div class="row align-items-center justify-content-center">
-                        <div class="col-xl-11 col-lg-12 col-md-12 col-sm-12">
-                            <ul class="nav nav-tabs b-0 d-flex align-items-center justify-content-center simple_tab_links mb-4" id="myTab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link active" id="description-tab" href="#description" data-toggle="tab" role="tab" aria-controls="description" aria-selected="true">Size Reference</a>
+            <section className="middle">
+                <div className="container">
+                    <div className="row align-items-center justify-content-center">
+                        <div className="col-xl-11 col-lg-12 col-md-12 col-sm-12">
+                            <ul className="nav nav-tabs b-0 d-flex align-items-center justify-content-center simple_tab_links mb-4" id="myTab" role="tablist">
+                                <li className="nav-item" role="presentation">
+                                    <a className="nav-link active" id="description-tab" href="#description" data-toggle="tab" role="tab" aria-controls="description" aria-selected="true">Size Reference</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link" href="#information" id="information-tab" data-toggle="tab" role="tab" aria-controls="information" aria-selected="false">Additional information</a>
+                                <li className="nav-item" role="presentation">
+                                    <a className="nav-link" href="#information" id="information-tab" data-toggle="tab" role="tab" aria-controls="information" aria-selected="false">Additional information</a>
                                 </li>
                             </ul>
 
-                            <div class="tab-content" id="myTabContent">
+                            <div className="tab-content" id="myTabContent">
 
-                                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-                                    <div class="description_info">
-                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                            <div class="sp-loading"><img src={`${constant.api_image_route}/${product?.product?.size_guide_image}`} style={{ width: '100%' }} alt="" /></div>
+                                <div className="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                                    <div className="description_info">
+                                        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                            <div className="sp-loading"><img src={`${constant.api_image_route}/${product?.product?.size_guide_image}`} style={{ width: '100%' }} alt="" /></div>
 
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
-                                    <div class="description_info">
-                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                            <div class="sp-loading">
+                                <div className="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
+                                    <div className="description_info">
+                                        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                            <div className="sp-loading">
                                                 <iframe loading="lazy" src={`https://www.youtube.com/embed/${youtube_parser(product?.product?.video_link)}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" style={{ width: '100%', height: '450px' }} frameborder="0"></iframe>
                                             </div>
 
