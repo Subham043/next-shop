@@ -75,10 +75,10 @@ export default function Products({userToken}) {
 									<a className="nav-link" id="all-tab" href="#all" data-toggle="tab" role="tab" aria-controls="all" aria-selected="true">All</a>
 								</li>
 								<li className="nav-item" role="presentation">
-									<a className="nav-link active" href="#male" id="male-tab" data-toggle="tab" role="tab" aria-controls="mens" aria-selected="false">Male's</a>
+									<a className="nav-link active" href="#male" id="male-tab" data-toggle="tab" role="tab" aria-controls="mens" aria-selected="false">Male&apos;s</a>
 								</li>
 								<li className="nav-item" role="presentation">
-									<a className="nav-link" href="#female" id="female-tab" data-toggle="tab" role="tab" aria-controls="women" aria-selected="false">Female's</a>
+									<a className="nav-link" href="#female" id="female-tab" data-toggle="tab" role="tab" aria-controls="women" aria-selected="false">Female&apos;s</a>
 								</li>
 							</ul>
 							

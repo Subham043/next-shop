@@ -1,7 +1,7 @@
 import React from 'react';
 import constant from '../../constant'
 
-export default function index({item}) {
+export default function Index({item}) {
     return (
         <div className="d-flex align-items-center justify-content-between br-bottom px-3 py-3">
             <div className="cart_single d-flex align-items-center">

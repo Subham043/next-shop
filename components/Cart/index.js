@@ -8,7 +8,7 @@ import { updateCartCounter, emptyCartAction, selectCart } from "../../redux/feat
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
 
-export default function index({ cartSection, userToken }) {
+export default function Index({ cartSection, userToken }) {
 
     const closeCartHandler = () => {
         cartSection.current.style.display = 'none';

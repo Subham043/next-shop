@@ -5,7 +5,7 @@ import { useSelector } from "react-redux"
 import { selectCart } from "../../redux/feature/cartSlice"
 
 
-export default function index({ cartSection }) {
+export default function Index({ cartSection }) {
 
 	const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 	const cartRedux = useSelector(selectCart)

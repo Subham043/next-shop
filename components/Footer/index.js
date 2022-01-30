@@ -1,5 +1,5 @@
 
-export default function index() {
+export default function Index() {
   return <div>
       <section className="px-0 py-3 br-top">
 				<div className="container">
@@ -91,7 +91,7 @@ export default function index() {
 										<li><a href="#">About Page</a></li>
 										<li><a href="#">Size Guide</a></li>
 										<li><a href="#">Shipping & Returns</a></li>
-										<li><a href="#">FAQ's Page</a></li>
+										<li><a href="#">FAQ&apos;s Page</a></li>
 										<li><a href="#">Privacy</a></li>
 									</ul>
 								</div>
@@ -101,9 +101,9 @@ export default function index() {
 								<div className="footer_widget">
 									<h4 className="widget_title">Shop</h4>
 									<ul className="footer-menu">
-										<li><a href="#">Men's Shopping</a></li>
-										<li><a href="#">Women's Shopping</a></li>
-										<li><a href="#">Kids's Shopping</a></li>
+										<li><a href="#">Men&apos;s Shopping</a></li>
+										<li><a href="#">Women&apos;s Shopping</a></li>
+										<li><a href="#">Kids&apos;s Shopping</a></li>
 										<li><a href="#">Furniture</a></li>
 										<li><a href="#">Discounts</a></li>
 									</ul>

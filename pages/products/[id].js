@@ -391,7 +391,7 @@ export default function Product({userToken}) {
                         <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                             <div className="prd_details">
 
-                                <div className="prt_01 mb-1"><span className="text-purple bg-light-purple rounded py-1">{product?.product?.gender}'s Suit</span></div>
+                                <div className="prt_01 mb-1"><span className="text-purple bg-light-purple rounded py-1">{product?.product?.gender}&apos;s Suit</span></div>
                                 <div className="prt_02 mb-3">
                                     <h2 className="ft-bold mb-1">{product?.product?.name}</h2>
                                     <div className="text-left">

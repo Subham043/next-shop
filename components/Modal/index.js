@@ -1,6 +1,6 @@
 
 
-export default function index({ modalId, refValue, children }) {
+export default function Index({ modalId, refValue, children }) {
     return <div>
         <div className="modal fade" id={modalId} tabIndex="-1" role="dialog" aria-labelledby="loginmodal" aria-hidden="true">
             <div className="modal-dialog modal-xl login-pop-form" role="document">

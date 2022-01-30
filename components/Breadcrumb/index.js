@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function index({link}) {
+export default function Index({link}) {
   return <div className="gray py-3 margin-top-custom">
   <div className="container">
       <div className="row">

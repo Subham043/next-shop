@@ -2,7 +2,7 @@ import React from 'react';
 import constant from '../../constant'
 import Link from 'next/link'
 
-export default function index({item}) {
+export default function Index({item}) {
 
 
     return <div className="col-xl-3 col-lg-4 col-md-6 col-6">

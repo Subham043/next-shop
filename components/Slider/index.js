@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
 
-export default function index() {
+export default function Index() {
 
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay()])
 
@@ -26,7 +26,7 @@ export default function index() {
                                             <div className="home-slider-title mb-4">
                                                 <h5 className="theme-cl fs-sm ft-ragular mb-0">Winter Collection</h5>
                                                 <h1 className="mb-1 ft-bold lg-heading">New Winter<br />Collections 2021</h1>
-                                                <span className="trending">There's nothing like trend</span>
+                                                <span className="trending">There&apos;s nothing like trend</span>
                                             </div>
 
                                             <a href="#" className="btn stretched-link borders">Shop Now<i className="lni lni-arrow-right ml-2"></i></a>
@@ -49,7 +49,7 @@ export default function index() {
                                             <div className="home-slider-title mb-4">
                                                 <h5 className="theme-cl fs-sm ft-ragular mb-0">Winter Collection</h5>
                                                 <h1 className="mb-1 ft-bold lg-heading">New Winter<br />Collections 2021</h1>
-                                                <span className="trending">There's nothing like trend</span>
+                                                <span className="trending">There&apos;s nothing like trend</span>
                                             </div>
 
                                             <a href="#" className="btn stretched-link borders">Shop Now<i className="lni lni-arrow-right ml-2"></i></a>
@@ -72,7 +72,7 @@ export default function index() {
                                         <div className="home-slider-title mb-4">
                                             <h5 className="theme-cl fs-sm ft-ragular mb-0">Winter Collection</h5>
                                             <h1 className="mb-1 ft-bold lg-heading">New Winter<br />Collections 2021</h1>
-                                            <span className="trending">There's nothing like trend</span>
+                                            <span className="trending">There&apos;s nothing like trend</span>
                                         </div>
 
                                         <a href="#" className="btn stretched-link borders">Shop Now<i className="lni lni-arrow-right ml-2"></i></a>
