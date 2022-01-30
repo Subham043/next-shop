@@ -7,7 +7,6 @@ import Product from '../../components/Product'
 import { toast } from 'react-toastify';
 import axios from '../../axios'
 import { parseCookies } from "../../helper/cookiedHelper"
-import Router from 'next/router'
 
 export default function Products({userToken}) {
 
@@ -20,7 +19,7 @@ export default function Products({userToken}) {
     setShowLoader(true)
     axios.get('/get-product',{
       headers: {
-        'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
+        'authorization': 'bearer ' + JSON.parse(userToken.userToken),
       },
     })
     .then(res => {
