@@ -1,10 +1,19 @@
 import Link from 'next/link'
+import { useCookies } from "react-cookie"
+import Router from 'next/router'
 
 
 export default function index({ cartSection }) {
 
+	const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
+
 	const openCartHandler = () => {
 		cartSection.current.style.display = 'block';
+	}
+
+	const logoutHandler = () =>{
+		removeCookie("userToken");
+		Router.push('/')
 	}
 
   return <div>
@@ -34,6 +43,7 @@ export default function index({ cartSection }) {
 								<li><Link href={`/kid`}><a>Kid</a></Link></li>
 								<li><Link href={`/address`}><a>Address</a></Link></li>
 								<li><Link href={`/orders`}><a>Orders</a></Link></li>
+								<li><button onClick={logoutHandler}>Logout</button></li>
 								
 							</ul>
 							

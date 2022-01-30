@@ -9,8 +9,9 @@ import { useRouter } from 'next/router'
 import constant from '../../constant'
 import useSWR from 'swr'
 import axios from '../../axios';
+import { parseCookies } from "../../helper/cookiedHelper"
 
-export default function Product() {
+export default function Product({userToken}) {
 
     const router = useRouter()
     const { id } = router.query
@@ -542,3 +543,25 @@ export default function Product() {
 //         }, // will be passed to the page component as props
 //     }
 // }
+
+
+export async function getServerSideProps(context) {
+
+    const data = parseCookies(context.req)
+  
+      if(data?.userToken==undefined){
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/"
+          }
+      }
+      
+    }
+  
+    return {
+          props: {
+              userToken: data && data,
+          }, // will be passed to the page component as props
+      }
+  }

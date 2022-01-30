@@ -9,9 +9,10 @@ import { useRouter } from 'next/router'
 import constant from '../../constant'
 import useSWR from 'swr'
 import OrderItem from '../../components/Order'
+import { parseCookies } from "../../helper/cookiedHelper"
 
 
-export default function Order() {
+export default function Order({userToken}) {
 
     const router = useRouter()
     const { id } = router.query
@@ -101,3 +102,24 @@ export default function Order() {
 
 
 }
+
+export async function getServerSideProps(context) {
+
+    const data = parseCookies(context.req)
+  
+      if(data?.userToken==undefined){
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/"
+          }
+      }
+      
+    }
+  
+    return {
+          props: {
+              userToken: data && data,
+          }, // will be passed to the page component as props
+      }
+  }

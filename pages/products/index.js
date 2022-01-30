@@ -6,8 +6,10 @@ import Loader from '../../components/Loader'
 import Product from '../../components/Product'
 import { toast } from 'react-toastify';
 import axios from '../../axios'
+import { parseCookies } from "../../helper/cookiedHelper"
+import Router from 'next/router'
 
-export default function Home() {
+export default function Products({userToken}) {
 
   const [products, setProducts] = useState([]);
   const cartSection= useRef(null);
@@ -125,4 +127,25 @@ export default function Home() {
 			</section>
     </Layout>
   )
+}
+
+export async function getServerSideProps(context) {
+
+  const data = parseCookies(context.req)
+
+    if(data?.userToken==undefined){
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/"
+        }
+    }
+    
+  }
+
+  return {
+        props: {
+            userToken: data && data,
+        }, // will be passed to the page component as props
+    }
 }

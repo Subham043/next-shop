@@ -6,9 +6,11 @@ import '../styles/flaticon.css'
 import Script from 'next/script'
 import Head from 'next/head'
 import 'react-toastify/dist/ReactToastify.css';
+import { CookiesProvider } from "react-cookie"
 
 function MyApp({ Component, pageProps }) {
   return <> 
+  <CookiesProvider>
   <Head>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" />
   </Head>
@@ -31,7 +33,7 @@ function MyApp({ Component, pageProps }) {
           console.log('bootstrap')
         }}
       />
-  
+  </CookiesProvider>
   </>
 }
 

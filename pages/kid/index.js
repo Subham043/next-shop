@@ -8,8 +8,9 @@ import { toast } from 'react-toastify';
 import axios from '../../axios'
 import useSWR from 'swr'
 import constant from '../../constant'
+import { parseCookies } from "../../helper/cookiedHelper"
 
-export default function Kid() {
+export default function Kid({userToken}) {
 
     const [showLoader, setShowLoader] = useState(true)
     const [student, setStudent] = useState([])
@@ -313,3 +314,25 @@ export default function Kid() {
         </Layout>
     )
 }
+
+
+export async function getServerSideProps(context) {
+
+    const data = parseCookies(context.req)
+  
+      if(data?.userToken==undefined){
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/"
+          }
+      }
+      
+    }
+  
+    return {
+          props: {
+              userToken: data && data,
+          }, // will be passed to the page component as props
+      }
+  }

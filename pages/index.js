@@ -5,9 +5,14 @@ import localStorage from '../localStorage'
 import Link from 'next/link'
 import Loader from '../components/Loader'
 import { toast, ToastContainer } from 'react-toastify';
+import { useCookies } from "react-cookie"
+import { parseCookies } from "../helper/cookiedHelper"
+import Router from 'next/router'
 
 
-export default function Home() {
+export default function Home({userToken}) {
+
+  const [cookie, setCookie] = useCookies(["userToken"])
 
   const [phone, setPhone] = useState('')
   const [phoneError, setPhoneError] = useState(false)
@@ -136,8 +141,14 @@ export default function Home() {
       });
       const token = res.data.data.token;
       const user = res.data.data.user;
+      setCookie("userToken", JSON.stringify(token), {
+        path: "/",
+        maxAge: 3600, // Expires after 1hr
+        sameSite: true,
+      })
 
       localStorage.storeUser(token,user);
+      Router.push('/products')
 
       setPhone('')
       setOtp('')
@@ -240,4 +251,25 @@ export default function Home() {
 
     </div >
   )
+}
+
+export async function getServerSideProps(context) {
+
+  const data = parseCookies(context.req)
+
+    if(data?.userToken!=undefined){
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/products"
+        }
+    }
+    
+  }
+
+  return {
+        props: {
+            userToken: data && data,
+        }, // will be passed to the page component as props
+    }
 }

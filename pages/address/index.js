@@ -8,8 +8,9 @@ import { toast } from 'react-toastify';
 import axios from '../../axios'
 import useSWR from 'swr'
 import constant from '../../constant'
+import { parseCookies } from "../../helper/cookiedHelper"
 
-export default function Address() {
+export default function Address({userToken}) {
 
   const [showLoader, setShowLoader] = useState(true)
   const [address, setAddress] = useState([])
@@ -451,4 +452,25 @@ export default function Address() {
 
     </Layout>
   )
+}
+
+export async function getServerSideProps(context) {
+
+  const data = parseCookies(context.req)
+
+    if(data?.userToken==undefined){
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/"
+        }
+    }
+    
+  }
+
+  return {
+        props: {
+            userToken: data && data,
+        }, // will be passed to the page component as props
+    }
 }

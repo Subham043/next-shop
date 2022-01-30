@@ -25,3 +25,26 @@ a {
   position: relative;
   flex: 0 0 100%;
 }
+
+
+.nav-menu>li>button{
+  padding: 22px 18px;
+  display: inline-block;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: .1px;
+  color: #2c2c2c;
+  background:transparent;
+  border:none;
+  outline: none;
+}
+
+menu>li:hover>button {
+  color: #ee1c47 !important;
+  cursor: pointer;
+}
+
+.header-transparent.dark-text .nav-menu>li>button:hover{
+  color: #ee1c47 !important;
+  cursor: pointer;
+}

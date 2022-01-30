@@ -4,6 +4,7 @@ import axios from '../../axios'
 import Link from 'next/link'
 import Loader from '../../components/Loader'
 import { toast, ToastContainer } from 'react-toastify';
+import { parseCookies } from "../../helper/cookiedHelper"
 
 export default function Home() {
 
@@ -228,3 +229,24 @@ export default function Home() {
         </div >
     )
 }
+
+export async function getServerSideProps(context) {
+
+    const data = parseCookies(context.req)
+  
+      if(data?.userToken!=undefined){
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/products"
+          }
+      }
+      
+    }
+  
+    return {
+          props: {
+              userToken: data && data,
+          }, // will be passed to the page component as props
+      }
+  }

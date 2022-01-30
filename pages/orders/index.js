@@ -7,8 +7,9 @@ import { toast } from 'react-toastify';
 import Link from 'next/link'
 import useSWR from 'swr'
 import constant from '../../constant'
+import { parseCookies } from "../../helper/cookiedHelper"
 
-export default function Orders() {
+export default function Orders({userToken}) {
 
     const [showLoader, setShowLoader] = useState(true)
     const [order, setOrder] = useState([])
@@ -119,3 +120,24 @@ export default function Orders() {
         </Layout>
     )
 }
+
+export async function getServerSideProps(context) {
+
+    const data = parseCookies(context.req)
+  
+      if(data?.userToken==undefined){
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/"
+          }
+      }
+      
+    }
+  
+    return {
+          props: {
+              userToken: data && data,
+          }, // will be passed to the page component as props
+      }
+  }
