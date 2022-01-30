@@ -5,6 +5,8 @@ import Loader from '../Loader'
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from "react-redux"
 import { updateCartCounter, emptyCartAction, selectCart } from "../../redux/feature/cartSlice"
+import { useCookies } from "react-cookie"
+import Router from 'next/router'
 
 export default function index({ cartSection, userToken }) {
 
@@ -41,6 +43,10 @@ export default function index({ cartSection, userToken }) {
         .catch(err => {
             console.log('error'+err);
             setShowLoader(false)
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             dispatch(updateCartCounter(0))
         })
     }
@@ -71,6 +77,10 @@ export default function index({ cartSection, userToken }) {
         .catch(err => {
             console.log(err);
             setShowLoader(false)
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error('Something went wrong. Please try again.', {
                 position: "top-right",
                 autoClose: 5000,
@@ -108,6 +118,10 @@ export default function index({ cartSection, userToken }) {
         .catch(err => {
             console.log(err);
             setShowLoader(false)
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error('Something went wrong. Please try again.', {
                 position: "top-right",
                 autoClose: 5000,
@@ -145,6 +159,10 @@ export default function index({ cartSection, userToken }) {
         .catch(err => {
             console.log(err);
             setShowLoader(false)
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error('Something went wrong. Please try again.', {
                 position: "top-right",
                 autoClose: 5000,

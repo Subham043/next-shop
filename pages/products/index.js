@@ -7,8 +7,12 @@ import Product from '../../components/Product'
 import { toast } from 'react-toastify';
 import axios from '../../axios'
 import { parseCookies } from "../../helper/cookiedHelper"
+import { useCookies } from "react-cookie"
+import Router from 'next/router'
 
 export default function Products({userToken}) {
+
+  const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
   const [products, setProducts] = useState([]);
   const cartSection= useRef(null);
@@ -29,7 +33,11 @@ export default function Products({userToken}) {
     })
     .catch(err => {
       setShowLoader(false)
-      // console.log(err.response)
+      // console.log(err?.response?.data?.message)
+      if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+        removeCookie("userToken");
+		    Router.push('/')
+      }
       toast.error('Something went wrong. Please refresh the page', {
         position: "top-right",
         autoClose: 5000,

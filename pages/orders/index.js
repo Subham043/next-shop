@@ -8,11 +8,15 @@ import Link from 'next/link'
 import useSWR from 'swr'
 import constant from '../../constant'
 import { parseCookies } from "../../helper/cookiedHelper"
+import { useCookies } from "react-cookie"
+import Router from 'next/router'
 
 export default function Orders({userToken}) {
 
     const [showLoader, setShowLoader] = useState(true)
     const [order, setOrder] = useState([])
+
+    const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
     const cartSection= useRef(null);
 
@@ -49,6 +53,10 @@ export default function Orders({userToken}) {
         } else {
             setShowLoader(false)
             // console.log(orderData)
+            if(orderData?.message=='Token is Invalid' || orderData?.message=='Token is Expired' || orderData?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             setOrder(orderData?.data?.orders)
         }
 

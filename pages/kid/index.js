@@ -9,12 +9,16 @@ import axios from '../../axios'
 import useSWR from 'swr'
 import constant from '../../constant'
 import { parseCookies } from "../../helper/cookiedHelper"
+import { useCookies } from "react-cookie"
+import Router from 'next/router'
 
 export default function Kid({userToken}) {
 
     const [showLoader, setShowLoader] = useState(true)
     const [student, setStudent] = useState([])
     const [school, setSchool] = useState([])
+
+    const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
     const modalCloseBtn= useRef(null);
     const cartSection= useRef(null);
@@ -63,6 +67,10 @@ export default function Kid({userToken}) {
         } else {
             setShowLoader(false)
             // console.log(data.data.schools)
+            if(schoolData?.message=='Token is Invalid' || schoolData?.message=='Token is Expired' || schoolData?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             setSchool(schoolData?.data?.schools)
             if(schoolData?.data?.schools?.length > 0) {
                 setSchoolId(schoolData?.data?.schools[0]?.id)
@@ -78,6 +86,10 @@ export default function Kid({userToken}) {
         } else {
             setShowLoader(false)
             // console.log(studentData.data)
+            if(studentData?.message=='Token is Invalid' || studentData?.message=='Token is Expired' || studentData?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             setStudent(studentData?.data?.kids)
             // setStudent(studentData?.data?.schools)
         }
@@ -174,6 +186,10 @@ export default function Kid({userToken}) {
         .catch(err => {
             setShowLoader(false)
             console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error(err?.response?.data?.data, {
                 position: "top-right",
                 autoClose: 5000,
@@ -206,6 +222,10 @@ export default function Kid({userToken}) {
         .catch(err => {
             setShowLoader(false)
             console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error(err?.response?.data?.data, {
                 position: "top-right",
                 autoClose: 5000,

@@ -12,6 +12,8 @@ import axios from '../../axios';
 import { parseCookies } from "../../helper/cookiedHelper"
 import { useDispatch } from "react-redux"
 import { updateCart } from "../../redux/feature/cartSlice"
+import { useCookies } from "react-cookie"
+import Router from 'next/router'
 
 export default function Product({userToken}) {
 
@@ -19,6 +21,7 @@ export default function Product({userToken}) {
     const { id } = router.query
 
     const dispatch = useDispatch();
+    const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
     const cartSection= useRef(null);
     const modalCloseBtn= useRef(null);
@@ -74,6 +77,10 @@ export default function Product({userToken}) {
             setShowLoader(true)
         }else{
             setShowLoader(false)
+            if(data?.message=='Token is Invalid' || data?.message=='Token is Expired' || data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             setProduct(data?.data)
             if(data?.data?.sizes?.length>0) {
                 setSize(data?.data?.sizes[0]?.id)
@@ -113,6 +120,10 @@ export default function Product({userToken}) {
         })
         .catch(err => {
             console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error(err?.response?.data?.data, {
                 position: "top-right",
                 autoClose: 5000,
@@ -138,6 +149,10 @@ export default function Product({userToken}) {
         })
         .catch(err => {
             console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error(err?.response?.data?.data, {
                 position: "top-right",
                 autoClose: 5000,
@@ -163,6 +178,10 @@ export default function Product({userToken}) {
         })
         .catch(err => {
             console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error(err?.response?.data?.data, {
                 position: "top-right",
                 autoClose: 5000,
@@ -302,6 +321,10 @@ export default function Product({userToken}) {
         .catch(err => {
             setShowLoader(false)
             console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             toast.error(err?.response?.data?.data, {
                 position: "top-right",
                 autoClose: 5000,

@@ -3,13 +3,14 @@ import Layout from '../../components/Layout'
 import { useState, useEffect, useRef } from 'react'
 import Loader from '../../components/Loader'
 import Breadcrumb from '../../components/Breadcrumb'
-import Modal from '../../components/Modal'
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
 import constant from '../../constant'
 import useSWR from 'swr'
 import OrderItem from '../../components/Order'
 import { parseCookies } from "../../helper/cookiedHelper"
+import { useCookies } from "react-cookie"
+import Router from 'next/router'
 
 
 export default function Order({userToken}) {
@@ -18,7 +19,7 @@ export default function Order({userToken}) {
     const { id } = router.query
 
     const cartSection = useRef(null);
-    const modalCloseBtn = useRef(null);
+    const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
     const [showLoader, setShowLoader] = useState(true)
     const [order, setOrder] = useState([])
@@ -51,6 +52,10 @@ export default function Order({userToken}) {
         if (!data) {
             setShowLoader(true)
         } else {
+            if(data?.message=='Token is Invalid' || data?.message=='Token is Expired' || data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
             setShowLoader(false)
             setOrder(data?.data?.sub_orders)
             // console.log(data);
