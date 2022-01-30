@@ -7,15 +7,17 @@ import Script from 'next/script'
 import Head from 'next/head'
 import 'react-toastify/dist/ReactToastify.css';
 import { CookiesProvider } from "react-cookie"
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 
 function MyApp({ Component, pageProps }) {
-  return <> 
-  <CookiesProvider>
-  <Head>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" />
-  </Head>
-  <Component {...pageProps} />
-  <Script
+  return <Provider store={store}>
+    <CookiesProvider>
+      <Head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" />
+      </Head>
+      <Component {...pageProps} />
+      <Script
         id="jquery-js"
         src="https://code.jquery.com/jquery-3.6.0.min.js"
         strategy="beforeInteractive"
@@ -25,7 +27,7 @@ function MyApp({ Component, pageProps }) {
         src="/js/popper.min.js"
         strategy="beforeInteractive"
       />
-  <Script
+      <Script
         id="bootstrap-js"
         src="/js/bootstrap.min.js"
         strategy="lazyOnload"
@@ -33,8 +35,8 @@ function MyApp({ Component, pageProps }) {
           console.log('bootstrap')
         }}
       />
-  </CookiesProvider>
-  </>
+    </CookiesProvider>
+  </Provider>
 }
 
 export default MyApp

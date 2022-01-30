@@ -1,11 +1,14 @@
 import Link from 'next/link'
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
+import { useSelector } from "react-redux"
+import { selectCart } from "../../redux/feature/cartSlice"
 
 
 export default function index({ cartSection }) {
 
 	const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
+	const cartRedux = useSelector(selectCart)
 
 	const openCartHandler = () => {
 		cartSection.current.style.display = 'block';
@@ -30,7 +33,7 @@ export default function index({ cartSection }) {
 								
 								<li>
 									<a href="#" onClick={openCartHandler}>
-										<i className="lni lni-shopping-basket"></i><span className="dn-counter">0</span>
+										<i className="lni lni-shopping-basket"></i><span className="dn-counter">{cartRedux.cartCounter}</span>
 									</a>
 								</li>
 								</ul>
@@ -50,7 +53,7 @@ export default function index({ cartSection }) {
 							<ul className="nav-menu nav-menu-social align-to-right">
 								<li>
 									<a href="#" onClick={openCartHandler}>
-										<i className="lni lni-shopping-basket"></i><span className="dn-counter">3</span>
+										<i className="lni lni-shopping-basket"></i><span className="dn-counter">{cartRedux.cartCounter}</span>
 									</a>
 								</li>
 							</ul>

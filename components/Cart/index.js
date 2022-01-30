@@ -3,12 +3,17 @@ import axios from '../../axios'
 import constant from '../../constant'
 import Loader from '../Loader'
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from "react-redux"
+import { updateCartCounter, emptyCartAction, selectCart } from "../../redux/feature/cartSlice"
 
-export default function index({ cartSection }) {
+export default function index({ cartSection, userToken }) {
 
     const closeCartHandler = () => {
         cartSection.current.style.display = 'none';
     }
+
+    const dispatch = useDispatch();
+    const cartRedux = useSelector(selectCart)
 
     const [cart, setCart] = useState([])
     const [showLoader, setShowLoader] = useState(false)
@@ -16,25 +21,27 @@ export default function index({ cartSection }) {
 
     useEffect(() => {
         loadCart()
-    }, [])
+    }, [cartRedux.updateCartCounter])
 
     const loadCart = () => {
         setShowLoader(true)
         axios.get('/get-cart', {
             headers: {
-                'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
+                'authorization': 'bearer ' + JSON.parse(userToken.userToken),
             },
         })
         .then(res => {
             // console.log(res.data);
             setCart(res?.data?.data?.cart_items)
             setShowLoader(false)
+            dispatch(updateCartCounter(res?.data?.data?.cart_items?.length))
             let subTotal = res?.data?.data?.cart_items.map(item => parseInt(item.price)*parseInt(item.quantity))
             setTotalPrice(subTotal?.reduce((prev, next) => prev + next))
         })
         .catch(err => {
-            console.log(err);
+            console.log('error'+err);
             setShowLoader(false)
+            dispatch(updateCartCounter(0))
         })
     }
 
@@ -44,8 +51,8 @@ export default function index({ cartSection }) {
         formData.append('cart_id',id);
         axios.post('/delete-cart', formData ,{
             headers: {
-                'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
-            },
+                'authorization': 'bearer ' + JSON.parse(userToken.userToken),
+              },
         })
         .then(res => {
             // console.log(res.data);
@@ -79,8 +86,8 @@ export default function index({ cartSection }) {
         setShowLoader(true)
         axios.get('/empty-cart', {
             headers: {
-                'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
-            },
+                'authorization': 'bearer ' + JSON.parse(userToken.userToken),
+              },
         })
         .then(res => {
             // console.log(res.data);
@@ -93,6 +100,8 @@ export default function index({ cartSection }) {
                 pauseOnHover: true,
                 toastId: new Date()
               });
+            dispatch(emptyCartAction())
+            dispatch(updateCartCounter(0))
             setCart([])
             loadCart()
         })
@@ -115,13 +124,14 @@ export default function index({ cartSection }) {
         const formData = new FormData();
         axios.post('/place-order', formData ,{
             headers: {
-                'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
-            },
+                'authorization': 'bearer ' + JSON.parse(userToken.userToken),
+              },
         })
         .then(res => {
             console.log(res.data);
             setShowLoader(false)
             setCart([])
+            dispatch(updateCartCounter(0))
             toast.success('Order placed successfully.', {
                 position: "top-right",
                 autoClose: 5000,
