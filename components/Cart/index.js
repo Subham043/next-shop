@@ -29,7 +29,8 @@ export default function index({ cartSection }) {
             // console.log(res.data);
             setCart(res?.data?.data?.cart_items)
             setShowLoader(false)
-            setTotalPrice(res?.data?.data?.cart_items.map(item => parseInt(item.price)).reduce((prev, next) => prev + next))
+            let subTotal = res?.data?.data?.cart_items.map(item => parseInt(item.price)*parseInt(item.quantity))
+            setTotalPrice(subTotal?.reduce((prev, next) => prev + next))
         })
         .catch(err => {
             console.log(err);
@@ -109,6 +110,42 @@ export default function index({ cartSection }) {
         })
     }
 
+    const placeOrderhandler = () => {
+        setShowLoader(true)
+        const formData = new FormData();
+        axios.post('/place-order', formData ,{
+            headers: {
+                'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
+            },
+        })
+        .then(res => {
+            console.log(res.data);
+            setShowLoader(false)
+            setCart([])
+            toast.success('Order placed successfully.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                toastId: new Date()
+            });
+            loadCart()
+        })
+        .catch(err => {
+            console.log(err);
+            setShowLoader(false)
+            toast.error('Something went wrong. Please try again.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                toastId: new Date()
+            });
+        })
+    }
+
     return <div>
         <div className="w3-ch-sideBar w3-bar-block w3-card-2 w3-animate-right" ref={cartSection} style={{ display: 'none', right: 0 }} id="Cart">
             {showLoader ? <Loader /> : null}
@@ -151,7 +188,7 @@ export default function index({ cartSection }) {
 
                     <div className="cart_action px-3 py-3">
                         <div className="form-group">
-                            <button type="button" className="btn d-block full-width btn-dark">Checkout Now</button>
+                            <button type="button" onClick={placeOrderhandler} className="btn d-block full-width btn-dark">Place Order</button>
                         </div>
                         <div className="form-group">
                             <button type="button" onClick={emptyCart} className="btn d-block full-width btn-dark-light">Empty Cart</button>

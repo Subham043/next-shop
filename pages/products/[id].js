@@ -270,7 +270,7 @@ export default function Product() {
         formData.append('payment_mode_id',paymentMode);
         formData.append('address_id',addressId);
         formData.append('kid_id',kidId);
-        formData.append('parameters',parameters);
+        formData.append('parameters',JSON.stringify(parameters));
         setShowLoader(true)
 
         axios.post('/add-to-cart',formData, {

@@ -33,6 +33,7 @@ export default function index({ cartSection }) {
 								<li><Link href={`/products`}><a>Product</a></Link></li>
 								<li><Link href={`/kid`}><a>Kid</a></Link></li>
 								<li><Link href={`/address`}><a>Address</a></Link></li>
+								<li><Link href={`/orders`}><a>Orders</a></Link></li>
 								
 							</ul>
 							
