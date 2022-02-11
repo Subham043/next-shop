@@ -63,7 +63,7 @@ export default function Index() {
 							
 							<div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
 								<div className="footer_widget">
-									<img src="/img/logo-light.png" className="img-footer small mb-2" alt="" />
+									<img src="/img/logo.png" className="img-footer small mb-2" alt="" />
 									
 									<div className="address mt-3">
 										3298 Grant Street Longview, TX<br />United Kingdom 75601	

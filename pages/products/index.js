@@ -28,7 +28,7 @@ export default function Products({userToken}) {
     })
     .then(res => {
       setShowLoader(false)
-      // console.log(res.data.data);
+      // console.log(res.data.data.products);
       setProducts(res.data.data.products)
     })
     .catch(err => {
@@ -88,7 +88,7 @@ export default function Products({userToken}) {
 									<div className="tab_product">
 										<div className="row rows-products">
 											{products.map((item) => {
-                        return <Product item={item} key={item.id} />
+                        return <Product item={item?.product} prices={item?.prices} key={item?.product?.id} />
                       })}
 											
 										</div>
@@ -100,8 +100,8 @@ export default function Products({userToken}) {
 										<div className="row rows-products">
 											
                     {products.map((item) => {
-                      if(item.gender === 'male' || item.gender === 'Male' || item.gender === 'MALE'){
-                        return <Product item={item} key={item.id} />
+                      if(item?.product?.gender === 'male' || item?.product?.gender === 'Male' || item?.product?.gender === 'MALE'){
+                        return <Product item={item?.product} prices={item?.prices} key={item?.product?.id} />
                       }
                     })}
 											
@@ -113,8 +113,8 @@ export default function Products({userToken}) {
 									<div className="tab_product">
 										<div className="row rows-products">
                     {products.map((item) => {
-                      if(item.gender === 'female' || item.gender === 'Female' || item.gender === 'FEMALE'){
-                        return <Product item={item} key={item.id} />
+                      if(item?.product?.gender === 'female' || item?.product?.gender === 'Female' || item?.product?.gender === 'FEMALE'){
+                        return <Product item={item?.product} prices={item?.prices} key={item?.product?.id} />
                       }
                     })}
 											

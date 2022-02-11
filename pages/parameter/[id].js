@@ -10,18 +10,15 @@ import constant from '../../constant'
 import useSWR from 'swr'
 import axios from '../../axios';
 import { parseCookies } from "../../helper/cookiedHelper"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { updateCart } from "../../redux/feature/cartSlice"
-import { updateParameter, emptyParameter, selectParameter } from "../../redux/feature/parameterSlice"
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
 
-export default function Product({ userToken }) {
+export default function Parameter({ userToken }) {
 
     const router = useRouter()
     const { id } = router.query
-
-    const parameter = useSelector(selectParameter)
 
     const dispatch = useDispatch();
     const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
@@ -42,7 +39,6 @@ export default function Product({ userToken }) {
     const [kid, setKid] = useState([])
     const [kidId, setKidId] = useState('')
     const [paymentMode, setPaymentMode] = useState(1)
-    const [deliveryType, setDeliveryType] = useState(1)
 
     const [quantity, setQuantity] = useState('')
     const [quantityError, setQuantityError] = useState(false)
@@ -364,28 +360,14 @@ export default function Product({ userToken }) {
         }
     }
 
-    const parameterHandler = () => {
-        // router.push(`/parameter/${id}`)
-        let parameterData = {
-            product,
-            size,
-            price,
-            priceId,
-            paymentMode,
-            deliveryType,
-        }
-        dispatch(updateParameter(parameterData))
+
+
+
+    const youtube_parser = (url = '') => {
+        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        var match = url.match(regExp);
+        return (match && match[7].length == 11) ? match[7] : false;
     }
-
-    const kidHandler = (value) => {
-        setKidId(value)
-        const kidDetail = kid.filter(item => item.id == value)
-        if(kidDetail?.length > 0) {
-            setSchoolId(kidDetail[0]?.school_id)
-        }
-    }
-
-
 
     return (
         <Layout cartSection={cartSection} userToken={userToken}>
@@ -402,7 +384,43 @@ export default function Product({ userToken }) {
                     <div className="row">
 
                         <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                            <div className="sp-loading"><img src={`${constant.api_image_route}/${product?.product?.image}`} style={{ width: '100%' }} alt="" /></div>
+                            <div className="row align-items-center justify-content-center">
+                                <div className="col-xl-11 col-lg-12 col-md-12 col-sm-12">
+                                    <ul className="nav nav-tabs b-0 d-flex align-items-center justify-content-center simple_tab_links mb-4" id="myTab" role="tablist">
+                                        <li className="nav-item" role="presentation">
+                                            <a className="nav-link active" id="description-tab" href="#description" data-toggle="tab" role="tab" aria-controls="description" aria-selected="true">Size Image Guide</a>
+                                        </li>
+                                        <li className="nav-item" role="presentation">
+                                            <a className="nav-link" href="#information" id="information-tab" data-toggle="tab" role="tab" aria-controls="information" aria-selected="false">Size Video Guide</a>
+                                        </li>
+                                    </ul>
+
+                                    <div className="tab-content" id="myTabContent">
+
+                                        <div className="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                                            <div className="description_info">
+                                                <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                    <div className="sp-loading"><img src={`${constant.api_image_route}/${product?.product?.size_guide_image}`} style={{ width: '100%' }} alt="" /></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
+                                            <div className="description_info">
+                                                <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                    <div className="sp-loading">
+                                                        <iframe loading="lazy" src={`https://www.youtube.com/embed/${youtube_parser(product?.product?.video_link)}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen="" style={{ width: '100%', height: '450px' }} frameBorder="0"></iframe>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12">
@@ -434,7 +452,7 @@ export default function Product({ userToken }) {
                                             <p>Select Child:</p>
                                             <div className="d-flex align-items-center justify-content-between" style={{ width: '100%' }}>
 
-                                                <select className="mb-2 custom-select" value={kidId} onChange={(e) => kidHandler(e.target.value)}>
+                                                <select className="mb-2 custom-select" value={kidId} onChange={(e) => setKidId(e.target.value)}>
                                                     {kid.map((item, index) => {
                                                         return <option value={item?.id} key={index} disabled={item.gender != product?.product?.gender ? true : false}>{item?.name}</option>
                                                     })}
@@ -443,54 +461,6 @@ export default function Product({ userToken }) {
                                                 <a href="#" data-toggle="modal" data-target="#login1" className="btn custom-height bg-dark mb-2 ml-2">
                                                     <i className="fas fa-user mr-2"></i>Add Kid
                                                 </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="prt_04 mb-4">
-                                    <div className="text-left pb-0 pt-2">
-                                        <div className="col-12 col-lg-7" style={{ paddingLeft: 0 }}>
-                                            <p>Select Address:</p>
-                                            <div className="d-flex align-items-center justify-content-between" style={{ width: '100%' }}>
-
-                                                <select className="mb-2 custom-select" value={addressId} onChange={(e) => setAddressId(e.target.value)}>
-                                                    {address.map((item, index) => {
-                                                        return <option value={item?.id} key={index}>{item?.label} ({item?.address_line1?.substring(0, 30)}...)</option>
-                                                    })}
-
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="prt_04 mb-4">
-                                    <div className="text-left pb-0 pt-2">
-                                        <div className="col-12 col-lg-7" style={{ paddingLeft: 0 }}>
-                                            <p>Select Delivery Type:</p>
-                                            <div className="d-flex align-items-center justify-content-between" style={{ width: '100%' }}>
-
-
-                                                <select className="mb-2 custom-select" value={deliveryType} onChange={(e) => setDeliveryType(e.target.value)} >
-                                                    <option value="1">School</option>
-                                                    <option value="2">Home</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="prt_04 mb-4">
-                                    <div className="text-left pb-0 pt-2">
-                                        <div className="col-12 col-lg-7" style={{ paddingLeft: 0 }}>
-                                            <p>Select Payment Mode:</p>
-                                            <div className="d-flex align-items-center justify-content-between" style={{ width: '100%' }}>
-
-
-                                                <select className="mb-2 custom-select" value={paymentMode} onChange={(e) => setPaymentMode(e.target.value)} >
-                                                    <option value="1">Pay on Delivery</option>
-                                                    <option value="2">Pay at school</option>
-                                                    <option value="3">Pay online</option>
-                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -518,9 +488,6 @@ export default function Product({ userToken }) {
                                             <a data-toggle="modal" data-target="#login1" className="btn btn-block custom-height bg-dark mb-2 text-white">
                                                 <i className="lni lni-shopping-basket mr-2"></i>Add to Cart
                                             </a>
-                                            {/* <button onClick={parameterHandler} className="btn btn-block custom-height bg-dark mb-2 text-white" disabled={parameter==null?`true`:`false`}>
-                                                <i className="lni lni-shopping-basket mr-2"></i>Add to Cart
-                                            </button> */}
                                         </div>
                                     </div>
                                 </div>
@@ -534,8 +501,7 @@ export default function Product({ userToken }) {
                     </div>
                 </div>
             </section>
-
-
+            
             <Modal modalId="login1" refValue={modalCloseBtn}>
                 <div className="text-center mb-4">
                     <h2 className="m-0 ft-regular">Add {product?.product?.name} to cart</h2>
@@ -601,26 +567,6 @@ export default function Product({ userToken }) {
         </Layout>
     )
 }
-
-// export async function getServerSideProps(context) {
-//     let product = {}
-//     try {
-//         const res = await fetch(`http://35.154.209.18/api/product/${context.params.id}`, {
-//             headers: {
-//                 'authorization': 'bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zNS4xNTQuMjA5LjE4XC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjQzMzkwMjkxLCJleHAiOjE2NDQwNzY2OTEsIm5iZiI6MTY0MzM5MDI5MSwianRpIjoiUm9VUWpNaFVubWVSdnl1MyIsInN1YiI6NywicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.qzskxa9GVdwCgLuzaOKHHhGh-vO83hyZwhwbKZ21fxk",
-//             },
-//         });
-//         product = await res.json();
-//     } catch (error) {
-//         console.log(error.response)
-//     }
-
-//     return {
-//         props: {
-//             product: product.data
-//         }, // will be passed to the page component as props
-//     }
-// }
 
 
 export async function getServerSideProps(context) {

@@ -173,7 +173,7 @@ section.space.min{
 }
 
 .margin-top-custom{
-    padding-top: 85px !important;
+    padding-top: 95px !important;
 }
 
 .light-bg {
@@ -1474,7 +1474,7 @@ ul {
 }
 
 .nav-brand {
-    padding:13px 15px;
+    /* padding:13px 15px; */
     font-size: 24px;
 	margin-right: 1rem;
 	padding-left: 0;
@@ -5158,4 +5158,8 @@ footer.skin-dark-footer ul.footer-bottom-social li a:hover, footer.skin-dark-foo
 #back2Top:hover {
     background-color:#ffffff;
     color:#333c56;
+}
+
+.border-1{
+    border:1px solid #000;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import constant from '../../constant'
 import Link from 'next/link'
 
-export default function Index({item}) {
+export default function Index({item, prices}) {
 
 
     return <div className="col-xl-3 col-lg-4 col-md-6 col-6">
@@ -26,6 +26,7 @@ export default function Index({item}) {
                             <i className="fas fa-star"></i>
                         </div>
                         <h5 className="fs-md mb-0 lh-1 mb-1"> {item.name} </h5>
+                        {prices ? <div className="elis_rty">Starting from <span className="ft-bold text-dark fs-sm">Rs. {prices[0]?.price}</span></div>:null}
                     </div>
                 </div>
             </div>

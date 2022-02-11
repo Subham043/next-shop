@@ -3,7 +3,6 @@ import Layout from '../../components/Layout'
 import { useState, useEffect, useRef } from 'react'
 import Loader from '../../components/Loader'
 import Breadcrumb from '../../components/Breadcrumb'
-import Modal from '../../components/Modal'
 import { toast } from 'react-toastify';
 import axios from '../../axios'
 import useSWR from 'swr'
@@ -11,12 +10,14 @@ import constant from '../../constant'
 import { parseCookies } from "../../helper/cookiedHelper"
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
+import KidModal from '../../components/KidModal'
 
 export default function Kid({userToken}) {
 
     const [showLoader, setShowLoader] = useState(true)
     const [student, setStudent] = useState([])
     const [school, setSchool] = useState([])
+    const [clasSelect, setClasSelect] = useState([])
 
     const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
@@ -32,6 +33,14 @@ export default function Kid({userToken}) {
     const [schoolId, setSchoolId] = useState('')
     const [schoolIdError, setSchoolIdError] = useState(false)
     const [schoolIdErrorMsg, setSchoolIdErrorMsg] = useState('')
+
+    const [section, setSection] = useState('')
+    const [sectionError, setSectionError] = useState(false)
+    const [sectionErrorMsg, setSectionErrorMsg] = useState('')
+
+    const [clas, setClas] = useState('')
+    const [clasError, setClasError] = useState(false)
+    const [clasErrorMsg, setClasErrorMsg] = useState('')
 
 
     const fetcher = (...args) => fetch(...args, {
@@ -73,7 +82,9 @@ export default function Kid({userToken}) {
               }
             setSchool(schoolData?.data?.schools)
             if(schoolData?.data?.schools?.length > 0) {
-                setSchoolId(schoolData?.data?.schools[0]?.id)
+                setSchoolId(schoolData?.data?.schools[0]?.school?.id)
+                setClasSelect(schoolData?.data?.schools[0]?.classes)
+                setClas(schoolData?.data?.schools[0]?.classes[0]?.id)
             }
         }
 
@@ -113,12 +124,40 @@ export default function Kid({userToken}) {
         }
       }
 
+      const sectionHandler = (text) =>{
+        setSection(text) 
+        if (text == '') {
+          setSectionError(true) 
+          setSectionErrorMsg('Please enter a section') 
+          return;
+        } else if (!(/^[0-9]*$/.test(text))) {
+          setSectionError(true)
+          setSectionErrorMsg('please enter a valid section')  
+          return;
+        } else {
+          setSectionError(false)
+          setSectionErrorMsg('')  
+        }
+      }
+
+      const clasHandler = (text) =>{
+        setClas(text)
+        if (text == '') {
+            setClasError(true) 
+            setClasErrorMsg('Please select a class') 
+            return;
+        }
+      }
+
       const genderHandler = (text) =>{
         setGender(text)
       }
 
       const schoolIdHandler = (text) =>{
         setSchoolId(text)
+        let mainIndex = school.findIndex((item,index)=> item?.school?.id==text)
+        setClasSelect(school[mainIndex]?.classes)
+        setClas(school[mainIndex]?.classes[0]?.id)
         if (text == '') {
             setSchoolIdError(true) 
             setSchoolIdErrorMsg('Please select a school') 
@@ -135,6 +174,18 @@ export default function Kid({userToken}) {
             return;
         }
 
+        if (clas == '') {
+            setClasError(true) 
+            setClasErrorMsg('Please enter a class') 
+            return;
+        }
+
+        if (section == '') {
+            setSectionError(true) 
+            setSectionErrorMsg('Please enter a section') 
+            return;
+        }
+
         if (schoolId == '') {
             setSchoolIdError(true) 
             setSchoolIdErrorMsg('Please select a school') 
@@ -144,6 +195,18 @@ export default function Kid({userToken}) {
         if(nameError){
             setNameError(true) 
             setNameErrorMsg('Please enter a name')
+            return;
+        }
+
+        if(clasError){
+            setClasError(true) 
+            setClasErrorMsg('Please enter a class')
+            return;
+        }
+
+        if(sectionError){
+            setSectionError(true) 
+            setSectionErrorMsg('Please enter a section')
             return;
         }
 
@@ -157,6 +220,8 @@ export default function Kid({userToken}) {
         formData.append('school_id',schoolId);
         formData.append('gender',gender);
         formData.append('name',name);
+        formData.append('class_id',clas);
+        formData.append('section_id',section);
         setShowLoader(true)
 
         axios.post('/add-kid',formData, {
@@ -272,16 +337,22 @@ export default function Kid({userToken}) {
                             <tr className="table-dark">
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
+                                <th scope="col">Gender</th>
                                 <th scope="col">School</th>
+                                <th scope="col">Class</th>
+                                <th scope="col">Section</th>
                             </tr>
                         </thead>
                         {student?.length > 0 ? <tbody>
                             {student.map((item, index)=>{
                                 return (
                                 <tr key={item.id}>
-                                    <th scope="row">{index}</th>
+                                    <th scope="row">{index+1}</th>
                                     <td>{item.name}</td>
+                                    <td>{item.gender}</td>
                                     <td>{item.schoolName}</td>
+                                    <td>{item.className}</td>
+                                    <td>{item.sectionName}</td>
                                 </tr>
                                 )
                             })}
@@ -296,41 +367,9 @@ export default function Kid({userToken}) {
                     </table>
                 </div>
             </section>
-            <Modal modalId="login1" refValue={modalCloseBtn}>
-                <div className="text-center mb-4">
-                    <h2 className="m-0 ft-regular">Add Kid</h2>
-                </div>
 
-                <form>
-                    <div className="form-group">
-                        <label>Name</label>
-                        <input type="text" className="form-control" placeholder="Name*" value={name} onChange={(e)=>nameHandler(e.target.value)} />
-                        {nameError ? <i style={{ color: 'red' }}>{nameErrorMsg}</i>:null}
-                    </div>
-                    <div className="form-group">
-                        <label>Gender</label>
-                        <select className="mb-2 custom-select" id="size_select" value={gender} onChange={(e)=>genderHandler(e.target.value)} >
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label>School</label>
-                        <select className="mb-2 custom-select" id="size_select1" value={schoolId} onChange={(e)=>schoolIdHandler(e.target.value)}>
-                            {school.map((item)=>{
-                                return <option value={item?.id} key={item.id}>{item?.name}</option>
-                            })}
-                            
-                        </select>
-                        {schoolIdError ? <i style={{ color: 'red' }}>{schoolIdErrorMsg}</i>:null}
-                    </div>
-
-                    <div className="form-group">
-                        <button onClick={(e)=>addKidHandler(e)} className="btn btn-md full-width bg-dark text-light fs-md ft-medium">Add</button>
-                    </div>
-
-                </form>
-            </Modal>
+            <KidModal modalCloseBtn={modalCloseBtn} name={name} nameError={nameError} nameErrorMsg={nameErrorMsg} nameHandler={nameHandler} gender={gender} genderHandler={genderHandler} schoolId={schoolId} school={school} schoolIdError={schoolIdError} schoolIdHandler={schoolIdHandler} clasErrorMsg={clasErrorMsg} clas={clas} clasSelect={clasSelect} clasHandler={clasHandler} clasError={clasError} clasErrorMsg={clasErrorMsg} section={section} sectionError={sectionError} sectionErrorMsg={sectionErrorMsg} sectionHandler={sectionHandler} addKidHandler={addKidHandler} />
+            
         </Layout>
     )
 }

@@ -89,7 +89,7 @@ export default function Home({userToken}) {
     .catch(err => {
       setShowLoader(false)
       // console.log(err.response)
-      toast.error(err?.response?.data?.data, {
+      toast.error(err?.response?.data?.message, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,

@@ -14,7 +14,6 @@ function MyApp({ Component, pageProps }) {
   return <Provider store={store}>
     <CookiesProvider>
       <Head>
-        <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" />
       </Head>
       <Component {...pageProps} />
