@@ -107,7 +107,7 @@ export default function Orders({userToken}) {
                             {order.map((item, index)=>{
                                 return (
                                 <tr key={item.id}>
-                                    <th scope="row">{index}</th>
+                                    <th scope="row">{index+1}</th>
                                     <td>{item.cc_order_id}</td>
                                     <td>{date(item.created_at)}</td>
                                     <td><Link href={`/orders/${item.id}`}><a className="btn btn-success"><i className="far fa-eye"></i></a></Link></td>

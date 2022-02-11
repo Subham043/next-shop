@@ -19,12 +19,6 @@ export default function Index({item}) {
                         <p className="mb-2 mr-2"><span className="text-dark ft-medium ">Payment Mode : </span> <span className="text-dark ">{item.paymentModeName}</span>, </p>
                         <p className="mb-2 mr-2"><span className="text-dark ft-medium ">Order Status : </span> <span className="text-dark ">{item.orderStatus}</span>, </p>
                     </div>
-                    <div className="d-flex align-items-center" style={{flexWrap:'wrap'}}>
-                        {(JSON.parse(item?.parameters))?.map((i,index)=>{
-                            return <p className="mb-2 mr-2" key={index}><span className="text-dark ft-medium">{i.parameterName} : </span> <span className="text-dark ">{i.parameterValue}</span>, </p>
-                        })}
-                        
-                    </div>
                     <h4 className="fs-md ft-medium mb-0 lh-1">Rs. ${item.price}</h4>
                 </div>
             </div>

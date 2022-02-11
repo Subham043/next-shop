@@ -405,7 +405,7 @@ export default function Address({userToken}) {
               {address.map((item, index) => {
                 return (
                   <tr key={item.id}>
-                    <th scope="row">{index}</th>
+                    <th scope="row">{index+1}</th>
                     <td>{item.label}</td>
                     <td>{item.address_line1}</td>
                     <td>{item.city}</td>

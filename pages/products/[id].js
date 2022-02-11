@@ -3,7 +3,6 @@ import Layout from '../../components/Layout'
 import { useState, useEffect, useRef } from 'react'
 import Loader from '../../components/Loader'
 import Breadcrumb from '../../components/Breadcrumb'
-import Modal from '../../components/Modal'
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
 import constant from '../../constant'
@@ -11,7 +10,6 @@ import useSWR from 'swr'
 import axios from '../../axios';
 import { parseCookies } from "../../helper/cookiedHelper"
 import { useDispatch, useSelector } from "react-redux"
-import { updateCart } from "../../redux/feature/cartSlice"
 import { updateParameter, emptyParameter, selectParameter } from "../../redux/feature/parameterSlice"
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
@@ -27,7 +25,6 @@ export default function Product({ userToken }) {
     const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
     const cartSection = useRef(null);
-    const modalCloseBtn = useRef(null);
 
     const [showLoader, setShowLoader] = useState(true)
     const [product, setProduct] = useState({})
@@ -35,18 +32,18 @@ export default function Product({ userToken }) {
     const [size, setSize] = useState('')
     const [price, setPrice] = useState('')
     const [priceId, setPriceId] = useState('')
-    const [school, setSchool] = useState([])
     const [schoolId, setSchoolId] = useState('')
     const [address, setAddress] = useState([])
     const [addressId, setAddressId] = useState('')
     const [kid, setKid] = useState([])
+    const [kidDetails, setKidDetails] = useState({})
     const [kidId, setKidId] = useState('')
-    const [paymentMode, setPaymentMode] = useState(1)
-    const [deliveryType, setDeliveryType] = useState(1)
+    const [paymentMode, setPaymentMode] = useState('')
+    const [paymentModeData, setPaymentModeData] = useState([])
+    const [deliveryType, setDeliveryType] = useState('')
+    const [deliveryTypeData, setDeliveryTypeData] = useState([])
 
-    const [quantity, setQuantity] = useState('')
-    const [quantityError, setQuantityError] = useState(false)
-    const [quantityErrorMsg, setQuantityErrorMsg] = useState('')
+    const [quantity, setQuantity] = useState(1)
 
     const [parameters, setParameters] = useState([])
 
@@ -102,43 +99,17 @@ export default function Product({ userToken }) {
 
     useEffect(() => {
 
-        getSchoolAndAddress()
+        getAddress()
+        getPaymentMode()
+        getDeliveryType()
 
 
         return () => { };
     }, []);
 
-    const getSchoolAndAddress = async () => {
+    const getAddress = async () => {
         setShowLoader(true)
-        axios.get('/get-school', {
-            headers: {
-                'authorization': 'bearer ' + JSON.parse(userToken.userToken),
-            },
-        })
-            .then(res => {
-                // console.log(res.data);
-                setSchool(res?.data?.data?.schools)
-                if (res?.data?.data?.schools?.length > 0) {
-                    setSchoolId(res?.data?.data?.schools[0].id)
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                if (err?.response?.data?.message == 'Token is Invalid' || err?.response?.data?.message == 'Token is Expired' || err?.response?.data?.message == 'Authorization Token not found') {
-                    removeCookie("userToken");
-                    Router.push('/')
-                }
-                // toast.error(err?.response?.data?.data, {
-                //     position: "top-right",
-                //     autoClose: 5000,
-                //     hideProgressBar: false,
-                //     closeOnClick: true,
-                //     pauseOnHover: true,
-                //     toastId: new Date()
-                //   });
-
-            })
-
+        
         axios.get('/get-address', {
             headers: {
                 'authorization': 'bearer ' + JSON.parse(userToken.userToken),
@@ -157,14 +128,6 @@ export default function Product({ userToken }) {
                     removeCookie("userToken");
                     Router.push('/')
                 }
-                // toast.error(err?.response?.data?.data, {
-                //     position: "top-right",
-                //     autoClose: 5000,
-                //     hideProgressBar: false,
-                //     closeOnClick: true,
-                //     pauseOnHover: true,
-                //     toastId: new Date()
-                //   });
 
             })
 
@@ -174,10 +137,12 @@ export default function Product({ userToken }) {
             },
         })
             .then(res => {
-                // console.log(res.data);
+                // console.log(res?.data?.data?.kids[0]?.school_id);
                 setKid(res?.data?.data?.kids)
                 if (res?.data?.data?.kids?.length > 0) {
-                    setKidId(res?.data?.data?.kids[0].id)
+                    setKidId(res?.data?.data?.kids[0]?.id)
+                    setKidDetails({...res?.data?.data?.kids[0]})
+                    setSchoolId(res?.data?.data?.kids[0]?.school_id)
                 }
             })
             .catch(err => {
@@ -186,163 +151,67 @@ export default function Product({ userToken }) {
                     removeCookie("userToken");
                     Router.push('/')
                 }
-                // toast.error(err?.response?.data?.data, {
-                //     position: "top-right",
-                //     autoClose: 5000,
-                //     hideProgressBar: false,
-                //     closeOnClick: true,
-                //     pauseOnHover: true,
-                //     toastId: new Date()
-                //   });
 
             })
 
         setShowLoader(false)
     }
 
-    const quantityHandler = (text) => {
-        setQuantity(text)
-        if (text == '') {
-            setQuantityError(true)
-            setQuantityErrorMsg('Please enter a quantity')
-            return;
-        } else if (!(/^[0-9\s]*$/.test(text))) {
-            setQuantityError(true)
-            setQuantityErrorMsg('please enter a valid quantity')
-            return;
-        } else {
-            setQuantityError(false)
-            setQuantityErrorMsg('')
-        }
-    }
 
-
-    const addToCartHandler = (e) => {
-        e.preventDefault();
-        if (quantity == '') {
-            setQuantityError(true)
-            setQuantityErrorMsg('Please enter a quantity')
-            toast.error('Please fill all the required fields', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                toastId: new Date()
-            });
-            return;
-        }
-        if (quantityError) {
-            setQuantityError(true)
-            setQuantityErrorMsg('Please enter a quantity')
-            toast.error('Please fill all the required fields', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                toastId: new Date()
-            });
-            return;
-        }
-        if (kidId == '') {
-            toast.error('Please select a kid or add a new kid', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                toastId: new Date()
-            });
-            return;
-        }
-        if (schoolId == '') {
-            toast.error('Please select a school', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                toastId: new Date()
-            });
-            return;
-        }
-        if (addressId == '') {
-            toast.error('Please select an address or add a new address', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                toastId: new Date()
-            });
-            return;
-        }
-        if (parameters.length != product?.parameters?.length) {
-            toast.error('Please fill all the required fields', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                toastId: new Date()
-            });
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('product_id', product?.product?.id);
-        formData.append('quantity', quantity);
-        formData.append('price_id', priceId);
-        formData.append('school_id', schoolId);
-        formData.append('payment_mode_id', paymentMode);
-        formData.append('address_id', addressId);
-        formData.append('kid_id', kidId);
-        formData.append('parameters', JSON.stringify(parameters));
+    const getPaymentMode = async () => {
         setShowLoader(true)
 
-        axios.post('/add-to-cart', formData, {
+        axios.get('/get-payment-modes', {
             headers: {
                 'authorization': 'bearer ' + JSON.parse(userToken.userToken),
             },
         })
             .then(res => {
-                setShowLoader(false)
-                // console.log(res);
-                // getAddressDataHandler()
-                toast.success('Added to cart.', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    toastId: new Date()
-                });
-                setQuantity('')
-                modalCloseBtn.current.click();
-                dispatch(updateCart());
+                // console.log(res?.data?.data?.kids[0]?.school_id);
+                setPaymentModeData(res?.data?.data?.paymentModes)
+                if (res?.data?.data?.paymentModes?.length > 0) {
+                    setPaymentMode(res?.data?.data?.paymentModes[0]?.id)
+                }
             })
             .catch(err => {
-                setShowLoader(false)
                 console.log(err);
                 if (err?.response?.data?.message == 'Token is Invalid' || err?.response?.data?.message == 'Token is Expired' || err?.response?.data?.message == 'Authorization Token not found') {
                     removeCookie("userToken");
                     Router.push('/')
                 }
-                toast.error(err?.response?.data?.data, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    toastId: new Date()
-                });
 
             })
-        setQuantityError(false)
-        setQuantityErrorMsg('')
 
+        setShowLoader(false)
     }
+
+    const getDeliveryType = async () => {
+        setShowLoader(true)
+
+        axios.get('/get-delivery-types', {
+            headers: {
+                'authorization': 'bearer ' + JSON.parse(userToken.userToken),
+            },
+        })
+            .then(res => {
+                // console.log(res?.data?.data?.kids[0]?.school_id);
+                setDeliveryTypeData(res?.data?.data?.deiveryTypes)
+                if (res?.data?.data?.deiveryTypes?.length > 0) {
+                    setDeliveryType(res?.data?.data?.deiveryTypes[0]?.id)
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                if (err?.response?.data?.message == 'Token is Invalid' || err?.response?.data?.message == 'Token is Expired' || err?.response?.data?.message == 'Authorization Token not found') {
+                    removeCookie("userToken");
+                    Router.push('/')
+                }
+
+            })
+
+        setShowLoader(false)
+    }
+
 
     const setSizeAndPrice = (s) => {
         setSize(s)
@@ -353,19 +222,8 @@ export default function Product({ userToken }) {
         }
     }
 
-    const parametersHandler = (value, key, i) => {
-        if (typeof parameters[i] === 'undefined') {
-            setParameters([...parameters, { parameterName: key, parameterValue: value }])
-        } else {
-            let newParameters = parameters.filter((item, index) => {
-                return i != index;
-            })
-            setParameters([...newParameters, { parameterName: key, parameterValue: value }])
-        }
-    }
-
     const parameterHandler = () => {
-        // router.push(`/parameter/${id}`)
+        
         let parameterData = {
             product,
             size,
@@ -373,8 +231,17 @@ export default function Product({ userToken }) {
             priceId,
             paymentMode,
             deliveryType,
+            kidId,
+            schoolId,
+            kidDetails,
+            quantity,
+            productId:id,
+            addressId
         }
         dispatch(updateParameter(parameterData))
+        if(parameter.parameter!=null){
+            router.push(`/parameter`)
+        }
     }
 
     const kidHandler = (value) => {
@@ -382,6 +249,7 @@ export default function Product({ userToken }) {
         const kidDetail = kid.filter(item => item.id == value)
         if(kidDetail?.length > 0) {
             setSchoolId(kidDetail[0]?.school_id)
+            setKidDetails({...kidDetail})
         }
     }
 
@@ -471,9 +339,11 @@ export default function Product({ userToken }) {
 
 
                                                 <select className="mb-2 custom-select" value={deliveryType} onChange={(e) => setDeliveryType(e.target.value)} >
-                                                    <option value="1">School</option>
-                                                    <option value="2">Home</option>
+                                                    {deliveryTypeData.map((item, index) => {
+                                                        return <option value={item?.id} key={index} >{item?.name}</option>
+                                                    })}
                                                 </select>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -487,9 +357,28 @@ export default function Product({ userToken }) {
 
 
                                                 <select className="mb-2 custom-select" value={paymentMode} onChange={(e) => setPaymentMode(e.target.value)} >
-                                                    <option value="1">Pay on Delivery</option>
-                                                    <option value="2">Pay at school</option>
-                                                    <option value="3">Pay online</option>
+                                                    {paymentModeData.map((item, index) => {
+                                                        return <option value={item?.id} key={index} >{item?.name}</option>
+                                                    })}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="prt_04 mb-4">
+                                    <div className="text-left pb-0 pt-2">
+                                        <div className="col-12 col-lg-7" style={{ paddingLeft: 0 }}>
+                                            <p>Select Quantity:</p>
+                                            <div className="d-flex align-items-center justify-content-between" style={{ width: '100%' }}>
+
+
+                                                <select className="mb-2 custom-select" value={quantity} onChange={(e) => setQuantity(e.target.value)} >
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -515,12 +404,12 @@ export default function Product({ userToken }) {
                                 <div className="prt_05 mb-4">
                                     <div className="form-row mb-7">
                                         <div className="col-12 col-lg">
-                                            <a data-toggle="modal" data-target="#login1" className="btn btn-block custom-height bg-dark mb-2 text-white">
+                                            {/* <a data-toggle="modal" data-target="#login1" className="btn btn-block custom-height bg-dark mb-2 text-white">
                                                 <i className="lni lni-shopping-basket mr-2"></i>Add to Cart
-                                            </a>
-                                            {/* <button onClick={parameterHandler} className="btn btn-block custom-height bg-dark mb-2 text-white" disabled={parameter==null?`true`:`false`}>
+                                            </a> */}
+                                            <button onClick={parameterHandler} className="btn btn-block custom-height bg-dark mb-2 text-white" >
                                                 <i className="lni lni-shopping-basket mr-2"></i>Add to Cart
-                                            </button> */}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -534,69 +423,6 @@ export default function Product({ userToken }) {
                     </div>
                 </div>
             </section>
-
-
-            <Modal modalId="login1" refValue={modalCloseBtn}>
-                <div className="text-center mb-4">
-                    <h2 className="m-0 ft-regular">Add {product?.product?.name} to cart</h2>
-                </div>
-                <form>
-                    <div className="form-group">
-                        <label>Quantity</label>
-                        <input type="text" className="form-control" placeholder="Quantity*" value={quantity} onChange={(e) => quantityHandler(e.target.value)} />
-                        {quantityError ? <i style={{ color: 'red' }}>{quantityErrorMsg}</i> : null}
-                    </div>
-                    {product?.parameters?.map((item, index) => {
-                        return (
-                            <div className="form-group" key={index}>
-                                <label>{item.name}</label>
-                                <input type="text" className="form-control" placeholder={`${item.name}*`} value={parameters[index]?.parameterValue || ''} onChange={(e) => parametersHandler(e.target.value, item.name, index)} />
-                                {/* {quantityError ? <i style={{ color: 'red' }}>{quantityErrorMsg}</i>:null} */}
-                            </div>
-                        )
-                    })}
-                    <div className="form-group">
-                        <label>Kid</label>
-                        <select className="mb-2 custom-select" value={kidId} onChange={(e) => setKidId(e.target.value)}>
-                            {kid.map((item, index) => {
-                                return <option value={item?.id} key={index}>{item?.name}</option>
-                            })}
-
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label>School</label>
-                        <select className="mb-2 custom-select" value={schoolId} onChange={(e) => setSchoolId(e.target.value)}>
-                            {school.map((item, index) => {
-                                return <option value={item?.id} key={index}>{item?.name}</option>
-                            })}
-
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label>Address</label>
-                        <select className="mb-2 custom-select" value={addressId} onChange={(e) => setAddressId(e.target.value)}>
-                            {address.map((item, index) => {
-                                return <option value={item?.id} key={index}>{item?.label} ({item?.address_line1?.substring(0, 30)}...)</option>
-                            })}
-
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label>Payment Mode</label>
-                        <select className="mb-2 custom-select" value={paymentMode} onChange={(e) => setPaymentMode(e.target.value)} >
-                            <option value="1">Pay on Delivery</option>
-                            <option value="2">Pay at school</option>
-                            <option value="3">Pay online</option>
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <button onClick={(e) => addToCartHandler(e)} className="btn btn-md full-width bg-dark text-light fs-md ft-medium">Add To Cart</button>
-                    </div>
-
-                </form>
-            </Modal>
 
         </Layout>
     )

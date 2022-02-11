@@ -23,6 +23,8 @@ export default function Order({userToken}) {
 
     const [showLoader, setShowLoader] = useState(true)
     const [order, setOrder] = useState([])
+    
+    const [total, setTotal] = useState(0)
 
 
     const fetcher = (...args) => fetch(...args, {
@@ -58,6 +60,11 @@ export default function Order({userToken}) {
               }
             setShowLoader(false)
             setOrder(data?.data?.sub_orders)
+            let amt = 0;
+            data?.data?.sub_orders?.map((item)=>{
+                amt+=parseInt(item?.sub_total)
+            })
+            setTotal(amt)
             // console.log(data);
         }
 
@@ -93,7 +100,7 @@ export default function Order({userToken}) {
 
                                 <div className="d-flex align-items-center justify-content-between br-top br-bottom px-3 py-3">
                                     <h6 className="mb-0">Subtotal</h6>
-                                    <h3 className="mb-0 ft-medium">Rs. {order?.length>0 ? order[0]?.sub_total : 0}</h3>
+                                    <h3 className="mb-0 ft-medium">Rs. {order?.length>0 ? total : 0}</h3>
                                 </div>
 
                             </div>
