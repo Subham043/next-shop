@@ -223,6 +223,18 @@ export default function Product({ userToken }) {
     }
 
     const parameterHandler = () => {
+
+    if(priceId== '' || schoolId=='' || addressId=='' || kidId=='' || paymentMode == '' || deliveryType==''){
+        toast.error('Something went wrong. Please refresh the page.', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            toastId: new Date()
+        });
+        return;
+    }
         
         let parameterData = {
             product,

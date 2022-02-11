@@ -6,7 +6,7 @@ import Cart from '../Cart'
 export default function Index({cartSection,userToken,children}) {
   return <main>
       <div id="main-wrapper">
-      <Header  cartSection={cartSection} />
+      <Header  cartSection={cartSection} userToken={userToken} />
         {children}
         <Cart cartSection={cartSection} userToken={userToken} />
         <ToastContainer />

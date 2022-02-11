@@ -19,7 +19,7 @@ export default function Index({item}) {
                         <p className="mb-2 mr-2"><span className="text-dark ft-medium ">Payment Mode : </span> <span className="text-dark ">{item.paymentModeName}</span>, </p>
                         <p className="mb-2 mr-2"><span className="text-dark ft-medium ">Order Status : </span> <span className="text-dark ">{item.orderStatus}</span>, </p>
                     </div>
-                    <h4 className="fs-md ft-medium mb-0 lh-1">Rs. ${item.price}</h4>
+                    <h4 className="fs-md ft-medium mb-0 lh-1">Rs. {item.price}</h4>
                 </div>
             </div>
         </div>

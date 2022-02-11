@@ -17,6 +17,8 @@ export default function Index({ cartSection, userToken }) {
     const dispatch = useDispatch();
     const cartRedux = useSelector(selectCart)
 
+    const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
+
     const [cart, setCart] = useState([])
     const [showLoader, setShowLoader] = useState(false)
     const [totalPrice, setTotalPrice] = useState(0)
