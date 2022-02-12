@@ -13,12 +13,17 @@ import { updateCart } from "../../redux/feature/cartSlice"
 import { updateParameter, emptyParameter, selectParameter } from "../../redux/feature/parameterSlice"
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
+import useRazorpay from "react-razorpay";
 
 export default function Parameter({ userToken }) {
 
     const router = useRouter()
 
+    const Razorpay = useRazorpay();
+
     const parameter = useSelector(selectParameter)
+
+    console.log(parameter);
 
     const dispatch = useDispatch();
     const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
@@ -47,7 +52,7 @@ export default function Parameter({ userToken }) {
     
 
 
-    const addToCartHandler = (e) => {
+    const addToCartHandler = async (e) => {
         e.preventDefault();
 
         let err = 0;
@@ -68,6 +73,13 @@ export default function Parameter({ userToken }) {
                 toastId: new Date()
             });
             return;
+        }
+
+        if(parameter?.parameter?.paymentMode==3){
+            await handlePayment({
+                amount: 50000,
+            });
+            
         }
 
         const formData = new FormData();
@@ -123,6 +135,39 @@ export default function Parameter({ userToken }) {
             })
 
     }
+
+    const handlePayment = async ({amount}) => {
+      
+        const options = {
+          key: "rzp_test_0RXBfHNq8QyU6G", // Enter the Key ID generated from the Dashboard
+          amount: amount*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: "INR",
+          name: "Cotton Culture",
+          description: "Test Transaction",
+          image: "/img/logo.png",
+          handler: function (response) {
+            alert(response.razorpay_payment_id);
+            
+          },
+          prefill: {
+            name: "Piyush Garg",
+            email: "youremail@example.com",
+            contact: "9999999999",
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#fec34d",
+          },
+        };
+      
+        const rzp1 = new Razorpay(options);
+      
+        rzp1.on("payment.failed", function (response) {});
+      
+        rzp1.open();
+      };
 
 
     const parametersHandler = (value, i) => {
