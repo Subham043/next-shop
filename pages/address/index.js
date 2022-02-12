@@ -381,7 +381,7 @@ export default function Address({userToken}) {
             <div className="d-flex align-items-center justify-content-between">
               <h2 className="ft-bold mb-1">Address</h2>
               <div className="eltio_k2">
-                <a href="#" data-toggle="modal" data-target="#login1" className="btn btn-block custom-height bg-dark mb-2">
+                <a href="#" data-toggle="modal" data-target="#address" className="btn btn-block custom-height bg-dark mb-2">
                   <i className="fas fa-map-marked-alt mr-2"></i>Add Address
                 </a>
               </div>

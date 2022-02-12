@@ -14,6 +14,7 @@ import { updateParameter, emptyParameter, selectParameter } from "../../redux/fe
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
 import KidModal from '../../components/KidModal'
+import AddressModal from '../../components/AddressModal'
 
 export default function Product({ userToken }) {
 
@@ -27,6 +28,7 @@ export default function Product({ userToken }) {
 
     const cartSection = useRef(null);
     const modalCloseBtn= useRef(null);
+    const modalCloseBtn2= useRef(null);
 
     const [showLoader, setShowLoader] = useState(true)
     const [product, setProduct] = useState({})
@@ -69,6 +71,26 @@ export default function Product({ userToken }) {
     const [clas, setClas] = useState('')
     const [clasError, setClasError] = useState(false)
     const [clasErrorMsg, setClasErrorMsg] = useState('')
+
+    const [label, setLabel] = useState('')
+    const [labelError, setLabelError] = useState(false)
+    const [labelErrorMsg, setLabelErrorMsg] = useState('')
+
+    const [addressInput, setAddressInput] = useState('')
+    const [addressInputError, setAddressInputError] = useState(false)
+    const [addressInputErrorMsg, setAddressInputErrorMsg] = useState('')
+
+    const [city, setCity] = useState('')
+    const [cityError, setCityError] = useState(false)
+    const [cityErrorMsg, setCityErrorMsg] = useState('')
+
+    const [state, setState] = useState('')
+    const [stateError, setStateError] = useState(false)
+    const [stateErrorMsg, setStateErrorMsg] = useState('')
+
+    const [pin, setPin] = useState('')
+    const [pinError, setPinError] = useState(false)
+    const [pinErrorMsg, setPinErrorMsg] = useState('')
 
     const fetcher = (...args) => fetch(...args, {
         headers: {
@@ -499,6 +521,213 @@ export default function Product({ userToken }) {
         }
     }
 
+    const labelHandler = (text) => {
+        setLabel(text)
+        if (text == '') {
+          setLabelError(true)
+          setLabelErrorMsg('Please enter a label')
+          return;
+        } else if (!(/^[a-zA-Z\s]*$/.test(text))) {
+          setLabelError(true)
+          setLabelErrorMsg('please enter a valid label')
+          return;
+        } else {
+          setLabelError(false)
+          setLabelErrorMsg('')
+        }
+      }
+    
+      const cityHandler = (text) => {
+        setCity(text)
+        if (text == '') {
+          setCityError(true)
+          setCityErrorMsg('Please enter a city')
+          return;
+        } else if (!(/^[a-zA-Z\s]*$/.test(text))) {
+          setCityError(true)
+          setCityErrorMsg('please enter a valid city')
+          return;
+        } else {
+          setCityError(false)
+          setCityErrorMsg('')
+        }
+      }
+    
+      const stateHandler = (text) => {
+        setState(text)
+        if (text == '') {
+          setStateError(true)
+          setStateErrorMsg('Please enter a state')
+          return;
+        } else if (!(/^[a-zA-Z\s]*$/.test(text))) {
+          setStateError(true)
+          setStateErrorMsg('please enter a valid state')
+          return;
+        } else {
+          setStateError(false)
+          setStateErrorMsg('')
+        }
+      }
+    
+      const pinHandler = (text) => {
+        setPin(text)
+        if (text == '') {
+          setPinError(true)
+          setPinErrorMsg('Please enter a pin')
+          return;
+        } else if (!(/^[0-9\s]*$/.test(text)) || text.length > 6 || text.length < 6) {
+          setPinError(true)
+          setPinErrorMsg('please enter a valid pin')
+          return;
+        } else {
+          setPinError(false)
+          setPinErrorMsg('')
+        }
+      }
+    
+      const addressInputHandler = (text) => {
+        setAddressInput(text)
+        if (text == '') {
+          setAddressInputError(true)
+          setAddressInputErrorMsg('Please enter a address')
+          return;
+        } else if (!(/^[a-z 0-9~%.:_\@\-\/\&+=,]+$/i.test(text))) {
+          setAddressInputError(true)
+          setAddressInputErrorMsg('please enter a valid address')
+          return;
+        } else {
+          setAddressInputError(false)
+          setAddressInputErrorMsg('')
+        }
+      }
+
+      const addAddressHandler = async (e) => {
+        e.preventDefault()
+    
+        if (label == '') {
+          setLabelError(true)
+          setLabelErrorMsg('Please enter a label')
+          return;
+        }
+    
+        if (addressInput == '') {
+          setAddressInputError(true)
+          setAddressInputErrorMsg('Please enter a address')
+          return;
+        }
+    
+        if (city == '') {
+          setCityError(true)
+          setCityErrorMsg('Please enter a city')
+          return;
+        }
+    
+        if (state == '') {
+          setStateError(true)
+          setStateErrorMsg('Please enter a state')
+          return;
+        }
+    
+        if (pin == '') {
+          setPinError(true)
+          setPinErrorMsg('Please enter a pin')
+          return;
+        }
+    
+        if (labelError) {
+          setLabelError(true)
+          setLabelErrorMsg('Please enter a label')
+          return;
+        }
+    
+        if (addressInputError) {
+          setAddressInputError(true)
+          setAddressInputErrorMsg('Please enter a address')
+          return;
+        }
+    
+        if (cityError) {
+          setCityError(true)
+          setCityErrorMsg('Please enter a city')
+          return;
+        }
+    
+        if (pinError) {
+          setPinError(true)
+          setPinErrorMsg('Please enter a pin')
+          return;
+        }
+    
+        if (stateError) {
+          setStateError(true)
+          setStateErrorMsg('Please enter a state')
+          return;
+        }
+    
+        const formData = new FormData();
+        formData.append('address', addressInput);
+        formData.append('city', city);
+        formData.append('label', label);
+        formData.append('state', state);
+        formData.append('pincode', pin);
+        formData.append('latitude', '12345');
+        formData.append('longitude', '12345');
+        setShowLoader(true)
+    
+        axios.post('/save-address', formData, {
+          headers: {
+            'authorization': 'bearer ' + JSON.parse(userToken.userToken),
+          },
+        })
+          .then(res => {
+            setShowLoader(false)
+            // console.log(res);
+            getAddress()
+            toast.success('Added Successfully.', {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              toastId: new Date()
+            });
+            setLabel('')
+            setAddressInput('')
+            setCity('')
+            setState('')
+            setPin('')
+            modalCloseBtn2.current.click();
+          })
+          .catch(err => {
+            setShowLoader(false)
+            console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+              removeCookie("userToken");
+              Router.push('/')
+            }
+            toast.error(err?.response?.data?.data, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              toastId: new Date()
+            });
+    
+          })
+        setLabelError(false)
+        setLabelErrorMsg('')
+        setCityError(false)
+        setCityErrorMsg('')
+        setStateError(false)
+        setStateErrorMsg('')
+        setPinError(false)
+        setPinErrorMsg('')
+        setAddressInputError(false)
+        setAddressInputErrorMsg('')
+    
+      }
+
 
 
     return (
@@ -544,16 +773,16 @@ export default function Product({ userToken }) {
 
                                 <div className="prt_04 mb-4">
                                     <div className="text-left pb-0 pt-2">
-                                        <div className="col-12 col-lg-7" style={{ paddingLeft: 0 }}>
+                                        <div className="col-12 col-lg-8" style={{ paddingLeft: 0 }}>
                                             <p>Select Child:</p>
                                             <div className="d-flex align-items-center justify-content-between" style={{ width: '100%' }}>
 
-                                                <select className="mb-2 custom-select" value={kidId} onChange={(e) => kidHandler(e.target.value)}>
+                                               {kid?.length>0 ? <select className="mb-2 custom-select" value={kidId} onChange={(e) => kidHandler(e.target.value)}>
                                                     {kid.map((item, index) => {
                                                         return <option value={item?.id} key={index} disabled={item.gender != product?.product?.gender ? true : false}>{item?.name}</option>
                                                     })}
 
-                                                </select>
+                                                </select> : null}
                                                 <a href="#" data-toggle="modal" data-target="#login1" className="btn custom-height bg-dark mb-2 ml-2">
                                                     <i className="fas fa-user mr-2"></i>Add Kid
                                                 </a>
@@ -563,16 +792,19 @@ export default function Product({ userToken }) {
                                 </div>
                                 <div className="prt_04 mb-4">
                                     <div className="text-left pb-0 pt-2">
-                                        <div className="col-12 col-lg-7" style={{ paddingLeft: 0 }}>
+                                        <div className="col-12 col-lg-10" style={{ paddingLeft: 0 }}>
                                             <p>Select Address:</p>
                                             <div className="d-flex align-items-center justify-content-between" style={{ width: '100%' }}>
 
-                                                <select className="mb-2 custom-select" value={addressId} onChange={(e) => setAddressId(e.target.value)}>
+                                                {address?.length > 0 ? <select className="mb-2 custom-select" value={addressId} onChange={(e) => setAddressId(e.target.value)}>
                                                     {address.map((item, index) => {
                                                         return <option value={item?.id} key={index}>{item?.label} ({item?.address_line1?.substring(0, 30)}...)</option>
                                                     })}
 
-                                                </select>
+                                                </select> : null}
+                                                <a href="#" data-toggle="modal" data-target="#address1" className="btn custom-height bg-dark mb-2 ml-2">
+                                                    <i className="fas fa-map-marked-alt mr-2"></i>Add Address
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -650,9 +882,6 @@ export default function Product({ userToken }) {
                                 <div className="prt_05 mb-4">
                                     <div className="form-row mb-7">
                                         <div className="col-12 col-lg">
-                                            {/* <a data-toggle="modal" data-target="#login1" className="btn btn-block custom-height bg-dark mb-2 text-white">
-                                                <i className="lni lni-shopping-basket mr-2"></i>Add to Cart
-                                            </a> */}
                                             <button onClick={parameterHandler} className="btn btn-block custom-height bg-dark mb-2 text-white" >
                                                 <i className="lni lni-shopping-basket mr-2"></i>Add to Cart
                                             </button>
@@ -671,6 +900,8 @@ export default function Product({ userToken }) {
             </section>
 
             <KidModal modalCloseBtn={modalCloseBtn} name={name} nameError={nameError} nameErrorMsg={nameErrorMsg} nameHandler={nameHandler} gender={gender} genderHandler={genderHandler} schoolId={scholId} school={school} schoolIdError={scholIdError} schoolIdHandler={scholIdHandler} clasErrorMsg={clasErrorMsg} clas={clas} clasSelect={clasSelect} clasHandler={clasHandler} clasError={clasError} clasErrorMsg={clasErrorMsg} section={section} sectionError={sectionError} sectionErrorMsg={sectionErrorMsg} sectionHandler={sectionHandler} addKidHandler={addKidHandler} />
+
+            <AddressModal modalCloseBtn={modalCloseBtn2} label={label} labelError={labelError} labelErrorMsg={labelErrorMsg} labelHandler={labelHandler} addressInput={addressInput} addressInputError={addressInputError} addressInputErrorMsg={addressInputErrorMsg} addressInputHandler={addressInputHandler} city={city} cityError={cityError} cityErrorMsg={cityErrorMsg} cityHandler={cityHandler} state={state} stateError={stateError} stateErrorMsg={stateErrorMsg} stateHandler={stateHandler} pin={pin} pinError={pinError} pinErrorMsg={pinErrorMsg} pinHandler={pinHandler} addAddressHandler={addAddressHandler} />
 
         </Layout>
     )

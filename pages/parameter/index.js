@@ -23,8 +23,6 @@ export default function Parameter({ userToken }) {
 
     const parameter = useSelector(selectParameter)
 
-    console.log(parameter);
-
     const dispatch = useDispatch();
     const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 

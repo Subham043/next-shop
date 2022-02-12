@@ -3,7 +3,7 @@ import Modal from '../Modal'
 
 export default function Index({modalCloseBtn , label, labelError, labelErrorMsg, labelHandler, addressInput, addressInputError, addressInputErrorMsg, addressInputHandler, city, cityError, cityErrorMsg, cityHandler, state, stateError, stateErrorMsg, stateHandler, pin, pinError, pinErrorMsg, pinHandler, addAddressHandler}){
 
-    return <Modal modalId="login1" refValue={modalCloseBtn}>
+    return <Modal modalId="address1" refValue={modalCloseBtn}>
         <div className="text-center mb-4">
           <h2 className="m-0 ft-regular">Add Address</h2>
         </div>
