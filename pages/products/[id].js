@@ -53,6 +53,7 @@ export default function Product({ userToken }) {
 
     const [school, setSchool] = useState([])
     const [clasSelect, setClasSelect] = useState([])
+    const [sectionSelect, setSectionSelect] = useState([])
 
     const [name, setName] = useState('')
     const [nameError, setNameError] = useState(false)
@@ -131,6 +132,7 @@ export default function Product({ userToken }) {
                 setScholId(schoolData?.data?.schools[0]?.school?.id)
                 setClasSelect(schoolData?.data?.schools[0]?.classes)
                 setClas(schoolData?.data?.schools[0]?.classes[0]?.id)
+                getSectionDataHandler(schoolData?.data?.schools[0]?.school?.id,schoolData?.data?.schools[0]?.classes[0]?.id)
             }
         }
 
@@ -187,6 +189,7 @@ export default function Product({ userToken }) {
         let mainIndex = school.findIndex((item,index)=> item?.school?.id==text)
         setClasSelect(school[mainIndex]?.classes)
         setClas(school[mainIndex]?.classes[0]?.id)
+        getSectionDataHandler(text,school[mainIndex]?.classes[0]?.id)
         if (text == '') {
             setScholIdError(true) 
             setScholIdErrorMsg('Please select a school') 
@@ -728,6 +731,40 @@ export default function Product({ userToken }) {
     
       }
 
+      const getSectionDataHandler = (sId, cId) =>{
+        setShowLoader(true)
+        axios.get(`/get-school-section-by-school-and-class/${sId}/${cId}`, {
+            headers: {
+                'authorization': 'bearer ' + JSON.parse(userToken.userToken),
+              },
+        })
+        .then(res => {
+            setShowLoader(false)
+            // console.log(res);
+            setSectionSelect(res?.data?.data?.schoolSections)
+            if(res?.data?.data?.schoolSections?.length > 0){
+              setSection(res?.data?.data?.schoolSections[0]?.id)
+            }
+        })
+        .catch(err => {
+            setShowLoader(false)
+            console.log(err);
+            if(err?.response?.data?.message=='Token is Invalid' || err?.response?.data?.message=='Token is Expired' || err?.response?.data?.message=='Authorization Token not found'){
+                removeCookie("userToken");
+                Router.push('/')
+              }
+            toast.error(err?.response?.data?.data, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                toastId: new Date()
+              });
+              
+        })
+      }
+
 
 
     return (
@@ -899,7 +936,7 @@ export default function Product({ userToken }) {
                 </div>
             </section>
 
-            <KidModal modalCloseBtn={modalCloseBtn} name={name} nameError={nameError} nameErrorMsg={nameErrorMsg} nameHandler={nameHandler} gender={gender} genderHandler={genderHandler} schoolId={scholId} school={school} schoolIdError={scholIdError} schoolIdHandler={scholIdHandler} clasErrorMsg={clasErrorMsg} clas={clas} clasSelect={clasSelect} clasHandler={clasHandler} clasError={clasError} clasErrorMsg={clasErrorMsg} section={section} sectionError={sectionError} sectionErrorMsg={sectionErrorMsg} sectionHandler={sectionHandler} addKidHandler={addKidHandler} />
+            <KidModal modalCloseBtn={modalCloseBtn} name={name} nameError={nameError} nameErrorMsg={nameErrorMsg} nameHandler={nameHandler} gender={gender} genderHandler={genderHandler} schoolId={scholId} school={school} schoolIdError={scholIdError} schoolIdHandler={scholIdHandler} clasErrorMsg={clasErrorMsg} clas={clas} clasSelect={clasSelect} clasHandler={clasHandler} clasError={clasError} clasErrorMsg={clasErrorMsg} section={section} sectionError={sectionError} sectionErrorMsg={sectionErrorMsg} sectionHandler={sectionHandler} sectionSelect={sectionSelect} addKidHandler={addKidHandler} />
 
             <AddressModal modalCloseBtn={modalCloseBtn2} label={label} labelError={labelError} labelErrorMsg={labelErrorMsg} labelHandler={labelHandler} addressInput={addressInput} addressInputError={addressInputError} addressInputErrorMsg={addressInputErrorMsg} addressInputHandler={addressInputHandler} city={city} cityError={cityError} cityErrorMsg={cityErrorMsg} cityHandler={cityHandler} state={state} stateError={stateError} stateErrorMsg={stateErrorMsg} stateHandler={stateHandler} pin={pin} pinError={pinError} pinErrorMsg={pinErrorMsg} pinHandler={pinHandler} addAddressHandler={addAddressHandler} />
 

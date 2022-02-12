@@ -1,6 +1,6 @@
 import Modal from '../Modal'
 
-export default function Index({ modalCloseBtn, name, nameError, nameErrorMsg, nameHandler, gender, genderHandler, schoolId, school, schoolIdError, schoolIdHandler, clas, clasSelect, clasHandler, clasError, clasErrorMsg, section, sectionError, sectionErrorMsg, sectionHandler, addKidHandler }) {
+export default function Index({ modalCloseBtn, name, nameError, nameErrorMsg, nameHandler, gender, genderHandler, schoolId, school, schoolIdError, schoolIdHandler, clas, clasSelect, clasHandler, clasError, clasErrorMsg, section, sectionError, sectionErrorMsg, sectionHandler, sectionSelect, addKidHandler }) {
     return <Modal modalId="login1" refValue={modalCloseBtn}>
         <div className="text-center mb-4">
             <h2 className="m-0 ft-regular">Add Kid</h2>
@@ -41,7 +41,12 @@ export default function Index({ modalCloseBtn, name, nameError, nameErrorMsg, na
             </div>
             <div className="form-group">
                 <label>Section</label>
-                <input type="text" className="form-control" placeholder="Section*" value={section} onChange={(e) => sectionHandler(e.target.value)} />
+                <select className="mb-2 custom-select" id="size_select1" value={section} onChange={(e) => sectionHandler(e.target.value)}>
+                    {sectionSelect.map((item) => {
+                        return <option value={item?.id} key={item?.id}>{item?.sectionName}</option>
+                    })}
+
+                </select>
                 {sectionError ? <i style={{ color: 'red' }}>{sectionErrorMsg}</i> : null}
             </div>
 
