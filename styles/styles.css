@@ -290,7 +290,7 @@ html body .db {
 	background:rgba(238, 28, 71,0.11) !important;
 }
 .theme-cl{
-	color:#ee1c47 !important;
+	color:#fec34d !important;
 }
 .dark_bg{
 	background:#202838;
@@ -4716,7 +4716,7 @@ footer.light-footer {
     background: #f4f5f7;
 }
 footer.dark-footer{
-	background:#252525;
+	background:#f4f5f7;
 }
 footer.blue-footer {
     background: #1c283c;
@@ -4787,10 +4787,10 @@ footer.skin-dark-footer .extream, footer.skin-light-footer .extream {
 	line-height:1.4;
 }
 footer.skin-dark-footer h4, footer.skin-blue-footer h4{
-    color: #ffffff;
+    color: #fec34d;
 }
 footer.skin-dark-footer .footer_widget ul li a, footer.skin-dark-footer, footer.skin-dark-footer a {
-    color:#a7a7a7;
+    color:#000;
     transition: all ease 0.4s;
     font-size:15px;
 }
@@ -4798,7 +4798,7 @@ footer.skin-blue-footer .footer_widget ul li a, footer.skin-blue-footer, footer.
     color: #828ba2;
 }
 footer.skin-dark-footer .footer_widget ul li a:hover, footer.skin-dark-footer .footer_widget ul li a:focus{
-    color:#ffffff;
+    color:#fec34d;
 }
 footer.skin-grocery-footer .footer_widget ul li a, footer.skin-grocery-footer, footer.skin-grocery-footer a {
     color:#b5d084;
@@ -4812,7 +4812,7 @@ footer.skin-grocery-footer .footer_widget ul li a, footer.skin-grocery-footer, f
     border-color: #192538;
 }
 .skin-dark-footer .footer-bottom {
-	border-top:1px solid #2b2b2b;
+	border-top:1px solid #f4f5f7;
 }
 
 footer.skin-dark-footer ul.footer-bottom-social li a:hover, footer.skin-dark-footer ul.footer-bottom-social li a:focus{

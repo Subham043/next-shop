@@ -124,7 +124,7 @@ export default function Index() {
 							
 							<div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
 								<div className="footer_widget">
-									<h4 className="widget_title">Subscribe</h4>
+									{/* <h4 className="widget_title">Subscribe</h4>
 									<p>Receive updates, hot deals, discounts sent straignt in your inbox daily</p>
 									<div className="foot-news-last">
 										<div className="input-group">
@@ -133,9 +133,9 @@ export default function Index() {
 												<button type="button" className="input-group-text b-0 text-light"><i className="lni lni-arrow-right"></i></button>
 											</div>
 										</div>
-									</div>
+									</div> */}
 									<div className="address mt-3">
-										<h5 className="fs-sm text-light">Secure Payments</h5>
+										<h5 className="fs-sm text-light" style={{color:'#fec34d !important'}}>Secure Payments</h5>
 										<div className="scr_payment"><img src="/img/card.png" className="img-fluid" alt="" /></div>
 									</div>
 								</div>
@@ -149,7 +149,7 @@ export default function Index() {
 					<div className="container">
 						<div className="row align-items-center">
 							<div className="col-lg-12 col-md-12 text-center">
-								<p className="mb-0">© 2021 Kumo. Designd By <a href="https://themezhub.com">ThemezHub</a>.</p>
+								<p className="mb-0">© 2022 Cotton Culture.</p>
 							</div>
 						</div>
 					</div>
