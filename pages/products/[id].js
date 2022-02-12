@@ -173,6 +173,7 @@ export default function Product({ userToken }) {
 
       const clasHandler = (text) =>{
         setClas(text)
+        getSectionDataHandler(scholId,text)
         if (text == '') {
             setClasError(true) 
             setClasErrorMsg('Please select a class') 

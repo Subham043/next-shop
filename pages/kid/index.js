@@ -144,6 +144,7 @@ export default function Kid({userToken}) {
 
       const clasHandler = (text) =>{
         setClas(text)
+        getSectionDataHandler(schoolId,text)
         if (text == '') {
             setClasError(true) 
             setClasErrorMsg('Please select a class') 
