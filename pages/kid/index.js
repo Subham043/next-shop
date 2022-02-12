@@ -404,7 +404,7 @@ export default function Kid({userToken}) {
                 </div>
             </section>
 
-            <KidModal modalCloseBtn={modalCloseBtn} name={name} nameError={nameError} nameErrorMsg={nameErrorMsg} nameHandler={nameHandler} gender={gender} genderHandler={genderHandler} schoolId={schoolId} school={school} schoolIdError={schoolIdError} schoolIdHandler={schoolIdHandler} clasErrorMsg={clasErrorMsg} clas={clas} clasSelect={clasSelect} clasHandler={clasHandler} clasError={clasError} clasErrorMsg={clasErrorMsg} section={section} sectionError={sectionError} sectionErrorMsg={sectionErrorMsg} sectionHandler={sectionHandler} sectionSelect={sectionSelect} addKidHandler={addKidHandler} />
+            <KidModal modalCloseBtn={modalCloseBtn} name={name} nameError={nameError} nameErrorMsg={nameErrorMsg} nameHandler={nameHandler} gender={gender} genderHandler={genderHandler} schoolId={schoolId} school={school} schoolIdError={schoolIdError} schoolIdHandler={schoolIdHandler} clasErrorMsg={clasErrorMsg} clas={clas} clasSelect={clasSelect} clasHandler={clasHandler} clasError={clasError} section={section} sectionError={sectionError} sectionErrorMsg={sectionErrorMsg} sectionHandler={sectionHandler} sectionSelect={sectionSelect} addKidHandler={addKidHandler} />
             
         </Layout>
     )
