@@ -15,6 +15,7 @@ function MyApp({ Component, pageProps }) {
     <CookiesProvider>
       <Head>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" />
+        <link rel="icon" href="/img/logo.png"/>
       </Head>
       <Component {...pageProps} />
       <Script
