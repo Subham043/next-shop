@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { updateCartCounter, emptyCartAction, selectCart } from "../../redux/feature/cartSlice"
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
+import useRazorpay from "react-razorpay";
 
 export default function Index({ cartSection, userToken }) {
 
@@ -16,6 +17,8 @@ export default function Index({ cartSection, userToken }) {
 
     const dispatch = useDispatch();
     const cartRedux = useSelector(selectCart)
+
+    const Razorpay = useRazorpay();
 
     const [cookies, setCookie, removeCookie] = useCookies(["userToken"])
 
@@ -135,7 +138,55 @@ export default function Index({ cartSection, userToken }) {
         })
     }
 
-    const placeOrderhandler = () => {
+    const placeOrderhandler = async() => {
+        setShowLoader(true)
+        let totPrice = 0;
+        if(cart?.length > 0) {
+            cart.map(item => {
+                if(item?.payment_mode_id==3 && item?.payment_status==0){
+                    totPrice+=(parseInt(item?.price) * parseInt(item?.quantity))
+                }
+            })
+        }
+
+        // console.log(totPrice);
+        if(totPrice > 0) {
+
+            await handlePayment({
+                amount: totPrice,
+            });
+            
+        }else{
+            completePlacingOrder()
+        }
+        setShowLoader(false)
+        
+    }
+
+    const updatePaymentStatus = async (payment_ref) => {
+        setShowLoader(true)
+        if(cart?.length > 0) {
+            cart.map(item => {
+                if(item?.payment_mode_id==3 && item?.payment_status==0){
+                    let formData = new FormData();
+                    formData.append('cart_ids', item?.id);
+                    formData.append('payment_reference_id', payment_ref);
+                    axios.post('/update-cart-payment-status', formData ,{
+                        headers: {
+                            'authorization': 'bearer ' + JSON.parse(userToken.userToken),
+                        },
+                    })
+                    .then(res => {})
+                    .catch(err => {})
+                }
+            })
+            completePlacingOrder();
+        }
+        
+        setShowLoader(false)
+    }
+
+    const completePlacingOrder = async() => {
         setShowLoader(true)
         const formData = new FormData();
         axios.post('/place-order', formData ,{
@@ -174,7 +225,44 @@ export default function Index({ cartSection, userToken }) {
                 toastId: new Date()
             });
         })
+        setShowLoader(false)
     }
+
+    const handlePayment = async ({amount}) => {
+      
+        const options = {
+          key: "rzp_test_0RXBfHNq8QyU6G", // Enter the Key ID generated from the Dashboard
+          amount: amount*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: "INR",
+          name: "Cotton Culture",
+          description: "Test Transaction",
+          image: "/img/logo.png",
+          handler: function (response) {
+            // alert(response.razorpay_payment_id);
+            updatePaymentStatus(response.razorpay_payment_id)
+            
+          },
+          prefill: {
+            name: "Piyush Garg",
+            email: "youremail@example.com",
+            contact: "9999999999",
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#fec34d",
+          },
+        };
+      
+        const rzp1 = new Razorpay(options);
+      
+        rzp1.on("payment.failed", function (response) {});
+      
+        rzp1.open();
+      };
+
+
 
     return <div>
         <div className="w3-ch-sideBar w3-bar-block w3-card-2 w3-animate-right" ref={cartSection} style={{ display: 'none', right: 0 }} id="Cart">

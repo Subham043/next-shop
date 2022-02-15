@@ -13,13 +13,11 @@ import { updateCart } from "../../redux/feature/cartSlice"
 import { updateParameter, emptyParameter, selectParameter } from "../../redux/feature/parameterSlice"
 import { useCookies } from "react-cookie"
 import Router from 'next/router'
-import useRazorpay from "react-razorpay";
 
 export default function Parameter({ userToken }) {
 
     const router = useRouter()
 
-    const Razorpay = useRazorpay();
 
     const parameter = useSelector(selectParameter)
 
@@ -40,7 +38,7 @@ export default function Parameter({ userToken }) {
             router.push(`/products`)
             return;
         }
-        let paramValues = parameter?.parameter?.product?.default_prices?.filter((item)=>item.size_id==parameter?.parameter?.schoolId)
+        let paramValues = parameter?.parameter?.product?.default_prices?.filter((item)=>item.size_id==parameter?.parameter?.size)
         if(paramValues?.length>0){
             setParameters(paramValues[0]?.parameters?.split(','))
         }
@@ -73,13 +71,6 @@ export default function Parameter({ userToken }) {
             return;
         }
 
-        if(parameter?.parameter?.paymentMode==3){
-            await handlePayment({
-                amount: 50000,
-            });
-            
-        }
-
         const formData = new FormData();
         formData.append('product_id', parameter?.parameter?.productId);
         formData.append('quantity', parameter?.parameter?.quantity);
@@ -92,6 +83,7 @@ export default function Parameter({ userToken }) {
         formData.append('section_id', parameter?.parameter?.kidDetails?.section_id);
         formData.append('delivery_type_id', parameter?.parameter?.deliveryType);
         formData.append('parameters', JSON.stringify(parameters));
+        // console.log(parameters);return;
         setShowLoader(true)
 
         axios.post('/add-to-cart', formData, {
@@ -133,40 +125,6 @@ export default function Parameter({ userToken }) {
             })
 
     }
-
-    const handlePayment = async ({amount}) => {
-      
-        const options = {
-          key: "rzp_test_0RXBfHNq8QyU6G", // Enter the Key ID generated from the Dashboard
-          amount: amount*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-          currency: "INR",
-          name: "Cotton Culture",
-          description: "Test Transaction",
-          image: "/img/logo.png",
-          handler: function (response) {
-            alert(response.razorpay_payment_id);
-            
-          },
-          prefill: {
-            name: "Piyush Garg",
-            email: "youremail@example.com",
-            contact: "9999999999",
-          },
-          notes: {
-            address: "Razorpay Corporate Office",
-          },
-          theme: {
-            color: "#fec34d",
-          },
-        };
-      
-        const rzp1 = new Razorpay(options);
-      
-        rzp1.on("payment.failed", function (response) {});
-      
-        rzp1.open();
-      };
-
 
     const parametersHandler = (value, i) => {
         let items = parameters;
